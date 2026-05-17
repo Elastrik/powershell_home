@@ -55,11 +55,8 @@ function diskbar {
 
 
 # programme bigfish
-$bigfishPath = "E:\powershell\config\bigfish.ps1"
-
-if (Test-Path -Path $bigfishPath) {
-    . $bigfishPath
-} else {
-    Write-Host "⚠️  Fichier bigfish introuvable : $bigfishPath" -ForegroundColor Yellow
-    Write-Host "Vérifiez que le disque externe est connecté." -ForegroundColor Yellow
+. "E:\powershell\app\bigfish\bigfish.ps1"
+$bigFish = [BigFish]::new()
+function bigfish {
+   $bigfish.Execute($args)
 }

@@ -55,6 +55,7 @@ function writeFish($element){
     $fishLabel = ''
     
 
+    
     if ($sizeMo -lt 1) {
         # on compte en Ko
         $size = [math]::Round($element.Length / 1KB, 2)
