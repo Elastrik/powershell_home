@@ -1,0 +1,46 @@
+{
+    "title": "ELASTRIK TERMINAL v1.0",
+    "subtitle": "Que souhaitez-vous faire ?",
+    "options": [
+        {
+            "key": "1",
+            "label": "Youtube",
+            "command": "youtube"
+        },
+        {
+            "key": "2",
+            "label": "Musique",
+            "command": "musique"
+        },
+        {
+            "key": "3",
+            "label": "Gaming",
+            "command": "steam"
+        },
+        {
+            "key": "4",
+            "label": "Note",
+            "command": "keep"
+        },
+        {
+            "key": "5",
+            "label": "Mails",
+            "command": "gmail"
+        },
+        {
+            "key": "6",
+            "label": "Excel",
+            "command": "sheet"
+        },
+        {
+            "key": "7",
+            "label": "BigFish — Gestion des fichiers",
+            "submenu": "E:\\powershell\\app\\bigfish\\menu.json"
+        },
+         {
+            "key"    : "Q",
+            "label"  : "Quitter",
+            "command": "exit"
+        }
+    ]
+}

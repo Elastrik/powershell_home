@@ -361,7 +361,7 @@ class BigFish {
     BigFish() {
         $this.Fisher = [Fisher]::new()
         $this.Renderer = [FishRenderer]::new()
-        $this.wallet = [FishWallet]::new("E:\powershell\app\persistent\wallet.json")
+        $this.wallet = [FishWallet]::new("E:\powershell\app\bigfish\persistent\wallet.json")
 
     }
 

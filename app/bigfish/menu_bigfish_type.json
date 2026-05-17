@@ -1,0 +1,46 @@
+{
+    "title"   : "  ~~~ BIGFISH — TYPE DE PECHE ~~~  ",
+    "subtitle": "  Quel type de poisson cherchez-vous ?  ",
+    "options" : [
+        {
+            "key"    : "1",
+            "label"  : "krill      — < 10 Ko",
+            "command": "bigfish fish krill"
+        },
+        {
+            "key"    : "2",
+            "label"  : "maquereau  — > 10 Ko",
+            "command": "bigfish fish maquereau"
+        },
+        {
+            "key"    : "3",
+            "label"  : "saumon     — > 1 Mo",
+            "command": "bigfish fish saumon"
+        },
+        {
+            "key"    : "4",
+            "label"  : "daurade    — > 100 Mo",
+            "command": "bigfish fish daurade"
+        },
+        {
+            "key"    : "5",
+            "label"  : "thon       — > 500 Mo",
+            "command": "bigfish fish thon"
+        },
+        {
+            "key"    : "6",
+            "label"  : "orque      — > 1 Go",
+            "command": "bigfish fish orque"
+        },
+        {
+            "key"    : "7",
+            "label"  : "baleine    — > 10 Go",
+            "command": "bigfish fish baleine"
+        },
+        {
+            "key"    : "R",
+            "label"  : "Retour",
+            "command": "back"
+        }
+    ]
+}

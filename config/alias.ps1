@@ -36,6 +36,10 @@ function kill   { Stop-Process -Name $args }
 function uptime { (Get-Date) - (gcim Win32_OperatingSystem).LastBootUpTime }
 function clear  { Clear-Host }
 
+function man($cmd){
+    get-help $cmd -Full
+}
+
 # --- Historique ---
 function hist($search) {
     if ($search) {

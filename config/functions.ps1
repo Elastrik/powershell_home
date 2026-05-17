@@ -57,6 +57,14 @@ function diskbar {
 # programme bigfish
 . "E:\powershell\app\bigfish\bigfish.ps1"
 $bigFish = [BigFish]::new()
+
 function bigfish {
    $bigfish.Execute($args)
 }
+Set-Alias bf bigfish
+
+# Charger la configuration depuis un fichier externe
+# ."E:\powershell\app\menu\menu.ps1"
+
+#menus 
+. "E:\powershell\app\menu\menu.ps1"

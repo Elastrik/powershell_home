@@ -1,0 +1,46 @@
+{
+    "title"   : "  ~~~ BIGFISH ~~~  ",
+    "subtitle": "  Choisissez une action  ",
+    "options" : [
+        {
+            "key"    : "1",
+            "label"  : "Pecher         — les 10 plus gros fichiers du dossier courant",
+            "command": "bigfish fish 10"
+        },
+        {
+            "key"    : "2",
+            "label"  : "Pecher deep    — les 10 plus gros fichiers (sous-dossiers inclus)",
+            "command": "bigfish deepfish 10"
+        },
+        {
+            "key"    : "3",
+            "label"  : "Pecher type    — par type de poisson",
+            "submenu": "E:\\powershell\\config\\menu_bigfish_type.json"
+        },
+        {
+            "key"    : "4",
+            "label"  : "Voir le filet  — afficher les poissons peches",
+            "command": "bigfish net"
+        },
+        {
+            "key"    : "5",
+            "label"  : "Vider le filet — relacher sans supprimer",
+            "command": "bigfish net empty"
+        },
+        {
+            "key"    : "6",
+            "label"  : "Vendre         — supprimer tout le filet",
+            "command": "bigfish sell"
+        },
+        {
+            "key"    : "7",
+            "label"  : "Aide           — liste des commandes",
+            "command": "bigfish help"
+        },
+        {
+            "key"    : "R",
+            "label"  : "Retour au menu principal",
+            "command": "back"
+        }
+    ]
+}
