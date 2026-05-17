@@ -55,7 +55,8 @@ function diskbar {
 
 
 # programme bigfish
-. "E:\powershell\app\bigfish\bigfish.ps1"
+$bigfish_path = $powershell_folder + "app\bigfish\bigfish.ps1" 
+. $bigfish_path
 $bigFish = [BigFish]::new()
 
 function bigfish {
@@ -67,4 +68,5 @@ Set-Alias bf bigfish
 # ."E:\powershell\app\menu\menu.ps1"
 
 #menus 
-. "E:\powershell\app\menu\menu.ps1"
+$menu_path = $powershell_folder + "app\menu\menu.ps1" 
+. $menu_path

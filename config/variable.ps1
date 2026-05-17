@@ -2,5 +2,5 @@ $desk = "C:\Users\victo\Desktop"
 $jahbless = "E:\"
 $docs = "D:\"
 $soft = "F:\"
-
+$powershell_folder = "E:\powershell\"
 $tradsh_path = "E:\powershell\config\tradsh.ps1"

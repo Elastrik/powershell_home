@@ -50,15 +50,23 @@ class Menu {
 
         $width = 50
         $line = "═" * $width
-        Write-Host "╔$line╗" -ForegroundColor Cyan
-        Write-Host "║ $($this.Title.PadRight($width - 1))║" -ForegroundColor Cyan
-        Write-Host "║ $($this.Subtitle.PadRight($width - 1))║" -ForegroundColor Cyan
-        Write-Host "╠$line╣" -ForegroundColor Cyan
+        Write-Host "╔$line╗" -ForegroundColor Blue
+
+        Write-Host "║ " -ForegroundColor Blue -NoNewline 
+        write-host "$($this.Title.PadRight($width - 1))" -ForegroundColor Cyan -NoNewline
+        write-host "║" -ForegroundColor Blue
+
+        Write-Host "║ " -ForegroundColor Blue -NoNewline
+        Write-Host "$($this.Subtitle.PadRight($width - 1))" -ForegroundColor white -NoNewline
+        Write-Host "║" -ForegroundColor Blue
+        Write-Host "╠$line╣" -ForegroundColor Blue
         foreach ($option in $this.Options) {
             $label = "  $($option.Key).  $($option.Label)"
-            Write-Host "║ $($label.PadRight($width - 1))║" -ForegroundColor Cyan
+            Write-Host "║ " -ForegroundColor  Blue -NoNewline
+            Write-Host "$($label.PadRight($width - 1))" -ForegroundColor white -NoNewline
+            Write-Host "║" -ForegroundColor Blue
         }
-        Write-Host "╚$line╝" -ForegroundColor Cyan
+        Write-Host "╚$line╝" -ForegroundColor Blue
         Write-Host ""
     }
 

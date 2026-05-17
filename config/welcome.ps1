@@ -34,14 +34,7 @@ if ($Host.UI.RawUI) {
     Write-Host ""
     Write-Host "  Bonjour VICTOR, donne moi des ordres." -ForegroundColor Magenta
     Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
-    Write-Host ">youtube" -ForegroundColor Red
-    Write-Host ">steam" -ForegroundColor Red
-    Write-Host ">musique (youtube musique)"  -ForegroundColor Red
-    Write-Host ">code (VSCODE)"  -ForegroundColor Red
-    Write-Host ">keep (google keep)"  -ForegroundColor Red
-    Write-Host ">gmail"  -ForegroundColor Red
-    Write-Host ">sheet (google sheet)"  -ForegroundColor Red
-    Write-Host ""
+
 }
 
 
