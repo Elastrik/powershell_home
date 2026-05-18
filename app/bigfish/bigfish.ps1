@@ -372,7 +372,10 @@ class BigFish {
             "sell" { $this.Sell($cmd[1]) }
             "net" { $this.Net($cmd[1]) }
             "help" { $this.Renderer.RenderHelp($this) }
-            default { $this.Fish(10) }
+            default { 
+                $menuBigfish = [Menu]::new('C:\Users\vledoux\OneDrive - SED\home\powershell\app\bigfish\menu.json')
+                $menuBigfish.show()
+            }
         }
     }
 

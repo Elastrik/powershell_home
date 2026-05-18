@@ -1,6 +1,6 @@
 # variables
 # Charger la configuration depuis un fichier externe
-$tradsh = "E:\powershell\config\tradsh.ps1"
+$tradsh = $tradsh_path
 
 if (Test-Path -Path $tradsh) {
     Set-Alias tradsh $tradsh
@@ -53,9 +53,13 @@ function diskbar {
     }
 }
 
+#menus 
+$menu_path = $powershell_folder + "\app\menu\menu.ps1" 
+. $menu_path
+
 
 # programme bigfish
-$bigfish_path = $powershell_folder + "app\bigfish\bigfish.ps1" 
+$bigfish_path = $powershell_folder + "\app\bigfish\bigfish.ps1" 
 . $bigfish_path
 $bigFish = [BigFish]::new()
 
@@ -67,6 +71,4 @@ Set-Alias bf bigfish
 # Charger la configuration depuis un fichier externe
 # ."E:\powershell\app\menu\menu.ps1"
 
-#menus 
-$menu_path = $powershell_folder + "app\menu\menu.ps1" 
-. $menu_path
+
