@@ -1,0 +1,46 @@
+{
+    "title": "~~ MENU MAISON ~~",
+    "subtitle": "Que souhaitez-vous faire ?",
+    "options": [
+        {
+            "key": "1",
+            "label": "Youtube",
+            "command": "youtube"
+        },
+        {
+            "key": "2",
+            "label": "YT Music",
+            "command": "musique"
+        },
+        {
+            "key": "3",
+            "label": "Google Keep",
+            "command": "Keep"
+        },
+        {
+            "key": "4",
+            "label": "Google Sheet",
+            "command": "Sheet"
+        },
+        {
+            "key": "5",
+            "label": "Mails",
+            "command": "gmail"
+        },
+        {
+            "key": "6",
+            "label": "Steam",
+            "command": "steam"
+        },
+        {
+            "key": "F",
+            "label": "BigFish — Gestion des fichiers",
+            "submenu": "app\\bigfish\\menu.json"
+        },
+         {
+            "key"    : "Q",
+            "label"  : "Quitter",
+            "command": "exit"
+        }
+    ]
+}

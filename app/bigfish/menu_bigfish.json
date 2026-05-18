@@ -38,9 +38,9 @@
             "command": "bigfish help"
         },
         {
-            "key"    : "R",
-            "label"  : "Retour au menu principal",
-            "command": "back"
+            "key"    : "Q",
+            "label"  : "Quitter",
+            "command": "exit"
         }
     ]
 }
