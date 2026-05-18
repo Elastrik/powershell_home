@@ -222,13 +222,8 @@ class FishRenderer {
         Write-Host " — $($fish.displaySize) -$($fish.valeur)€" -ForegroundColor $color 
     }
     [void] RenderWallet([BigFish] $bf) {
-        Write-Host "  █████" -ForegroundColor Cyan -NoNewline
-        Write-Host ' WALLET : [' -ForegroundColor White -NoNewline
-        Write-Host "$($bf.wallet.valeur)€" -ForegroundColor Yellow -NoNewline
-        Write-Host "] - Fish count : " -ForegroundColor White -NoNewline
-        Write-Host "$($bf.wallet.FishCount)  " -ForegroundColor Cyan -NoNewline
-        Write-Host "█████" -ForegroundColor Cyan 
-
+        $wr = [WalletRenderer]::new()
+        $wr.renderWallet($bf.wallet.wallet)
         
     }
 
@@ -247,6 +242,7 @@ class FishRenderer {
         for ($i = 0; $i -lt $logo.Length; $i++) {
             Write-Host $logo[$i] -ForegroundColor $colors[$i]
         }
+
         $this.renderWallet($bf)
      
     }

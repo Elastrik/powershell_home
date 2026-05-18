@@ -11,9 +11,12 @@ class Wallet {
         if (Test-Path $savePath) {
             $data = Get-Content $savePath | ConvertFrom-Json
             $this.valeur = $data.valeur
-            $this.Metadata = $data.Metadata
-            if($null -eq $this.Metadata) {
-                $this.Metadata = @{}
+
+            $this.Metadata = @{}
+            if ($data.Metadata) {
+                 $data.Metadata.PSObject.Properties | ForEach-Object {
+                    $this.Metadata[$_.Name] = $_.Value
+                 }
             }
         } else {
             $this.valeur = 0
@@ -44,12 +47,20 @@ class Wallet {
 
 class WalletRenderer{
     [void] RenderWallet ([Wallet] $w){
-       Write-Host "💰 Wallet : $($w.valeur) pièces"
-        if ($wallet.Metadata.Count -gt 0) {
-            Write-Host "📊 Métadonnées :"
-            $wallet.Metadata.GetEnumerator() | ForEach-Object {
-                Write-Host "   - $($_.Key) : $($_.Value)"
+        $border_color = "Gray"
+        Write-Host "  ██████████████████████████████████████████████████" -ForegroundColor $border_color 
+        Write-Host "  █" -ForegroundColor $border_color 
+        Write-Host "  █" -ForegroundColor $border_color -NoNewline
+        Write-Host " ** Wallet : ($($w.valeur) $($w.devise))" -ForegroundColor Yellow
+        if ($w.Metadata.Count -gt 0) {
+            # Write-Host "# Métadonnées #" -ForegroundColor White
+            $w.Metadata.GetEnumerator() | ForEach-Object {
+                Write-Host "  █" -ForegroundColor $border_color -NoNewline
+                Write-Host "   - $($_.Key) : " -ForegroundColor Magenta -NoNewline
+                Write-Host  " $($_.Value)" -ForegroundColor White
             }
         } 
+        Write-Host "  █" -ForegroundColor $border_color 
+        Write-Host "  ██████████████████████████████████████████████████" -ForegroundColor $border_color
     }
 }
