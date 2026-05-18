@@ -361,7 +361,8 @@ class BigFish {
     BigFish() {
         $this.Fisher = [Fisher]::new()
         $this.Renderer = [FishRenderer]::new()
-        $this.wallet = [FishWallet]::new("E:\powershell\app\bigfish\persistent\wallet.json")
+        $wallet_path = Join-path $global:wallet_path 'wallet.json'
+        $this.wallet = [FishWallet]::new($wallet_path)
 
     }
 
@@ -373,7 +374,8 @@ class BigFish {
             "net" { $this.Net($cmd[1]) }
             "help" { $this.Renderer.RenderHelp($this) }
             default { 
-                $menuBigfish = [Menu]::new('C:\Users\vledoux\OneDrive - SED\home\powershell\app\bigfish\menu.json')
+                $menubf_path = Join-Path $global:bigfish_path "menu.json"
+                $menuBigfish = [Menu]::new($menubf_path)
                 $menuBigfish.show()
             }
         }

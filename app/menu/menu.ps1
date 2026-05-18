@@ -42,6 +42,14 @@ class Menu {
         $this.HeaderBlock = $block
     }
 
+
+    static [string] ResolvePath([string]$path) {
+        if ($path -like "*:*") {  # Chemin absolu (ex: C:\...)
+            return $path
+        }
+        return Join-Path $global:PSConfigRoot $path
+    }
+
     [void] Render() {
         # exécute le header custom si défini
         if ($null -ne $this.HeaderBlock) {
@@ -99,17 +107,16 @@ class Menu {
 
             # Sous-menu via fichier JSON
             if (-not [string]::IsNullOrEmpty($selected.Submenu)) {
-                if(-not [string]::IsNullOrEmpty($selected.Command)){
-
-                    $sub = [Menu]::new($selected.Submenu,$selected.Command)
-                }else{
-                    $sub = [Menu]::new($selected.submenu)
-
+                $submenuPath = [Menu]::ResolvePath($selected.Submenu)
+                if (-not [string]::IsNullOrEmpty($selected.Command)) {
+                    $sub = [Menu]::new($submenuPath, $selected.Command)
+                } else {
+                    $sub = [Menu]::new($submenuPath)
                 }
-             
                 $sub.Show()
                 continue
             }
+
 
             # Commande normale
             Invoke-Expression $selected.Command
