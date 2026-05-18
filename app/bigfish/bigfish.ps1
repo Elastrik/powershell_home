@@ -82,11 +82,15 @@ class FishNet {
     }
     [Fishnet] Sell([fishWallet] $wallet) {
 
-        $this.net.GetEnumerator() | ForEach-Object {
-            $wallet.AddCatch($_)
-            Remove-Item $_.file
+        # $this.net.GetEnumerator() | ForEach-Object {
+            
+        # }
+        foreach ($fish in $this.net) {
+            $wallet.AddCatch($fish)
+            Remove-Item $fish.file
 
         }
+
         $this.net.clear()
         return $this
     }
@@ -320,36 +324,29 @@ class FishRenderer {
     }
 }
 
-class fishWallet {
-    [long]   $valeur;
-    [int]           $FishCount
-    [string]        $SavePath
+class FishWallet {
+    [Wallet] $Wallet
 
-    # charge le wallet depuis le fichier ou repart de zéro
     FishWallet([string] $savePath) {
-        $this.SavePath = $savePath
-        if (Test-Path $savePath) {
-            $data = Get-Content $savePath | ConvertFrom-Json
-            $this.valeur = $data.valeur
-            $this.FishCount = $data.FishCount
-        }
-        else {
-            $this.FishCount = 0
-            $this.valeur = 0
-        }
+        $this.Wallet = [Wallet]::new($savePath)
     }
 
     [void] AddCatch([FishFile] $fish) {
-        $this.valeur += $fish.valeur
-        $this.FishCount++
-        $this.Save()
+        $this.Wallet.AddValue($fish.valeur)
+
+        # Mettre à jour FishCount dans les métadonnées
+        $currentCount = $this.Wallet.GetMetadata("FishCount")
+        if ($null -eq $currentCount) { $currentCount = 0 }
+        $this.Wallet.SetMetadata("FishCount", $currentCount + 1)
     }
 
-    [void] Save() {
-        @{
-            fishCount = $this.fishCount
-            Valeur    = $this.valeur
-        } | ConvertTo-Json | Set-Content $this.SavePath
+    [int] GetFishCount() {
+        $count = $this.Wallet.GetMetadata("FishCount")
+        return if ($null -eq $count) { 0 } else { $count }
+    }
+
+    [long] GetValue() {
+        return $this.Wallet.valeur
     }
 }
 

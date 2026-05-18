@@ -114,6 +114,8 @@ function diskbar {
 $menu_class = Join-Path $global:menu_path "menu.ps1" 
 . $menu_class
 
+$wallet_class = Join-Path $global:wallet_class_path "wallet.ps1"
+. $wallet_class
 # programme bigfish
 
 $bigfish_class = Join-Path $global:bigfish_path  "bigfish.ps1" 

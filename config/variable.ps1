@@ -12,6 +12,7 @@ $global:powershell_home = Join-path $global:powershell_folder "home"
 $global:tradsh_path = Join-Path $global:PSConfigRoot "config\tradsh.ps1"  # Chemin relatif vers tradsh.ps1
 $global:menu_path = Join-Path $global:PSConfigRoot "app\menu" 
 $global:bigfish_path = Join-Path $global:PSConfigRoot "app\bigfish"  # Chemin relatif vers tradsh.ps1
+$global:wallet_class_path = Join-Path $global:PSConfigRoot "app\wallet"
 $global:wallet_path = Join-path $global:powershell_home 'persistent'
 $global:config_path = Join-path $global:PSConfigRoot 'config'
 

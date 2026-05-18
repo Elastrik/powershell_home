@@ -1,4 +1,6 @@
 {
-  "fishCount": 11,
-  "Valeur": 11
+  "valeur": 15,
+  "Metadata": {
+    "FishCount": 2
+  }
 }
