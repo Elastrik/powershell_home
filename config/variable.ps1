@@ -1,11 +1,12 @@
 # Obtenir la racine du projet (dossier parent de config/)
 
 # Définir les chemins globaux relatifs à la racine du projet
-$global:desk = Join-Path $global:PSConfigRoot "..\..\..\Bureau"  # Remonte de 3 niveaux depuis powershell/ pour atteindre Bureau
-$global:jahbless = Join-Path $global:PSConfigRoot "..\..\.."      # Remonte de 3 niveaux pour atteindre C:\Users\vledoux\
+
+$global:desk = Resolve-path( Join-Path $global:PSConfigRoot "..\..\..\Documents\OneDrive - SED\Bureau\")  # Remonte de 3 niveaux depuis powershell/ pour atteindre Bureau
+$global:jahbless = Resolve-path( Join-Path $global:PSConfigRoot "..\..\..")      # Remonte de 3 niveaux pour atteindre C:\Users\vledoux\
 $global:docs = Join-Path $global:jahbless "Documents"             # Utilise jahbless comme base
-$global:soft = Join-Path $global:PSConfigRoot "..\..\Soft"        # Remonte de 2 niveaux depuis powershell/ pour atteindre Soft
-$global:down = Join-Path $global:PSConfigRoot "..\..\..\Download"  
+$global:soft = Resolve-path( Join-Path $global:PSConfigRoot "..\Soft")        # Remonte de 2 niveaux depuis powershell/ pour atteindre Soft
+$global:down = Resolve-path( Join-Path $global:PSConfigRoot "..\..\..\Downloads")  
 $global:powershell_folder = $global:PSConfigRoot                  # Racine du projet (powershell/)
 $global:powershell_home = Join-path $global:powershell_folder "home"
 $global:tradsh_path = Join-Path $global:PSConfigRoot "config\tradsh.ps1"  # Chemin relatif vers tradsh.ps1
@@ -16,4 +17,5 @@ $global:config_path = Join-path $global:PSConfigRoot 'config'
 
 
 # repertoire par défaut
+$global:main_menu = Join-path $powershell_home 'menus\boulot.json'
 $global:default_location = $global:powershell_home

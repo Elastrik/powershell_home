@@ -37,7 +37,7 @@ function Start-RDP {
         [string]$RdpFile = ""
     )
      if ([string]::IsNullOrEmpty($RdpFile)) {
-        $File = Join-Path $global:desk "Adelia V14_sed02.rdp"
+        $RdpFile = Join-Path $global:desk "Adelia V14_sed02.rdp"
     }
 
     if (Test-Path -Path $RdpFile) {
@@ -130,8 +130,8 @@ Set-Alias bf bigfish
 
 # main menu
 function mainmenu {
-    $main_path = Join-Path $global:powershell_folder "home\menus\main.json"
-    $mm = [Menu]::New($main_path)
+    
+    $mm = [Menu]::New($global:main_menu)
     $mm.show()
 }
 
