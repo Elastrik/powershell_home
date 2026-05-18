@@ -137,5 +137,11 @@ function mainmenu {
     $mm.show()
 }
 
+$global:wallet = [Wallet]::new((Join-path $global:wallet_path "wallet.json"))
+function Wallet(){
+    $wrender = [WalletRenderer]::new()
+    $wrender.RenderWallet($global:wallet)
+}
+
 Set-Alias mm mainmenu
 

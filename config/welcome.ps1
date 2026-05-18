@@ -1,39 +1,72 @@
+class welcome {
+    
+    [void] RenderLogo (){
+           $logo = @(
+            " ███████╗██╗      █████╗ ███████╗████████╗██████╗ ██╗██╗  ██╗"
+            " ██╔════╝██║     ██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██║██║ ██╔╝"
+            " █████╗  ██║     ███████║███████╗   ██║   ██████╔╝██║█████╔╝ "
+            " ██╔══╝  ██║     ██╔══██║╚════██║   ██║   ██╔══██╗██║██╔═██╗ "
+            " ███████╗███████╗██║  ██║███████║   ██║   ██║  ██║██║██║  ██╗"
+            " ╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝"
+        )
 
+        $colors = @("Magenta", "Magenta", "Cyan", "Cyan", "Green", "Green")
 
-if ($Host.UI.RawUI) {
-    Write-Host ""
-    $meteo_chezy = (Invoke-WebRequest "wttr.in/Chezy-sur-Marne?format=3" -UseBasicParsing).Content.Trim()
-    $date = Get-Date -Format "dddd dd/MM/yyyy  HH:mm"
-    $psVersion = $PSVersionTable.PSVersion.ToString()
-
-    $logo = @(
-        " ███████╗██╗      █████╗ ███████╗████████╗██████╗ ██╗██╗  ██╗"
-        " ██╔════╝██║     ██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██║██║ ██╔╝"
-        " █████╗  ██║     ███████║███████╗   ██║   ██████╔╝██║█████╔╝ "
-        " ██╔══╝  ██║     ██╔══██║╚════██║   ██║   ██╔══██╗██║██╔═██╗ "
-        " ███████╗███████╗██║  ██║███████║   ██║   ██║  ██║██║██║  ██╗"
-        " ╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝"
-    )
-
-    $colors = @("Magenta", "Magenta", "Cyan", "Cyan", "Green", "Green")
-
-    for ($i = 0; $i -lt $logo.Length; $i++) {
-        Write-Host $logo[$i] -ForegroundColor $colors[$i]
+        for ($i = 0; $i -lt $logo.Length; $i++) {
+            Write-Host $logo[$i] -ForegroundColor $colors[$i]
+        }
     }
-    Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
-    Write-Host "  user     " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host "VICTOR"           -ForegroundColor Magenta
-    Write-Host "  machine  " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $env:COMPUTERNAME  -ForegroundColor Cyan
-    Write-Host "  shell    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host "PowerShell $psVersion" -ForegroundColor Green
-    Write-Host "  heure    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $date              -ForegroundColor Yellow
-    Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
-    Write-Host "  météo    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $meteo_chezy       -ForegroundColor Cyan
-    Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
-    Write-Host "  Etat des disques : " -ForegroundColor DarkGray
-    diskbar
-    Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray    
-    Write-Host ""
-    Write-Host "  Bonjour VICTOR, donne moi des ordres." -ForegroundColor Magenta
-    Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
+    [void] RenderSystemInfo(){
+        $date = Get-Date -Format "dddd dd/MM/yyyy  HH:mm"
+        # $psVersion = $PSVersionTable.PSVersion.ToString()
+
+        Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
+        Write-Host "  user     " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host "VICTOR"           -ForegroundColor Magenta
+        Write-Host "  machine  " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $env:COMPUTERNAME  -ForegroundColor Cyan
+        # Write-Host "  shell    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host "PowerShell $psVersion" -ForegroundColor Green
+        Write-Host "  heure    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $date              -ForegroundColor Yellow
+    } 
+    [void] RenderMeteo([string] $location){
+        $meteo_chezy = (Invoke-WebRequest "wttr.in/]$($location)?format=3" -UseBasicParsing).Content.Trim()
+
+        Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
+        Write-Host "  météo    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $meteo_chezy       -ForegroundColor Cyan
+
+    }
+    [void] RenderDiskInfo (){
+        Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
+        Write-Host "  Etat des disques : " -ForegroundColor DarkGray
+        diskbar
+    } 
+    [void] RenderWallet(){
+        Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray    
+        wallet        
+    
+    }
+    [void] RenderMessage([sTring] $msg){
+        Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
+        Write-Host "  $msg" -ForegroundColor Magenta
+    }
+}
+
+function Welcome (){
+    
+    
+    if ($Host.UI.RawUI) {
+        
+        $welcome = [Welcome]::New()
+       
+        $welcome.RenderLogo()
+        # $welcome.RenderSystemInfo()
+        $welcome.RenderDiskInfo()
+        $welcome.RenderWallet()
+        $welcome.RenderMeteo("chezy-sur-marne")
+        $welcome.RenderMessage("Bienvenue sur la pucellerie")        
+      
+        mainmenu
+        
+
+    }
 
 }
 
@@ -81,5 +114,4 @@ function prompt {
 
 
 Set-location $docs
-
-mainmenu
+welcome
