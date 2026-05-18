@@ -45,22 +45,36 @@ class Wallet {
     }
 }
 
-class WalletRenderer{
-    [void] RenderWallet ([Wallet] $w){
-        $border_color = "Gray"
-        Write-Host "  ██████████████████████████████████████████████████" -ForegroundColor $border_color 
-        Write-Host "  █" -ForegroundColor $border_color 
-        Write-Host "  █" -ForegroundColor $border_color -NoNewline
-        Write-Host " ** Wallet : ($($w.valeur) $($w.devise))" -ForegroundColor Yellow
+class WalletRenderer {
+    [void] RenderWallet([Wallet] $w) {
+        $inner  = 40  # largeur intérieure fixe
+        $top    = "═" * ($inner + 2)
+
+        Write-Host ""
+        Write-Host "  ╔══[ " -ForegroundColor DarkGray -NoNewline
+        Write-Host "WALLET" -ForegroundColor Yellow -NoNewline
+        Write-Host " ]$("═" * ($inner - 10))╗" -ForegroundColor DarkGray
+
+        # solde
+        $solde = "$($w.valeur) $($w.devise)"
+        Write-Host "  ║  " -ForegroundColor DarkGray -NoNewline
+        Write-Host "Solde      : " -ForegroundColor Gray -NoNewline
+        Write-Host $solde.PadRight($inner - 13) -ForegroundColor Yellow -NoNewline
+        Write-Host "║" -ForegroundColor DarkGray
+
+        # metadata
         if ($w.Metadata.Count -gt 0) {
-            # Write-Host "# Métadonnées #" -ForegroundColor White
+            Write-Host "  ╠$top╣" -ForegroundColor DarkGray
             $w.Metadata.GetEnumerator() | ForEach-Object {
-                Write-Host "  █" -ForegroundColor $border_color -NoNewline
-                Write-Host "   - $($_.Key) : " -ForegroundColor Magenta -NoNewline
-                Write-Host  " $($_.Value)" -ForegroundColor White
+                $val = "$($_.Value)"
+                Write-Host "  ║  " -ForegroundColor DarkGray -NoNewline
+                Write-Host "$($_.Key.PadRight(10)) : " -ForegroundColor Magenta -NoNewline
+                Write-Host $val.PadRight($inner - 13) -ForegroundColor White -NoNewline
+                Write-Host "║" -ForegroundColor DarkGray
             }
-        } 
-        Write-Host "  █" -ForegroundColor $border_color 
-        Write-Host "  ██████████████████████████████████████████████████" -ForegroundColor $border_color
+        }
+
+        Write-Host "  ╚$top╝" -ForegroundColor DarkGray
+        Write-Host ""
     }
 }
