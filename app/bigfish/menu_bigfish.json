@@ -15,7 +15,7 @@
         {
             "key"    : "3",
             "label"  : "Pecher type    — par type de poisson",
-            "submenu": "E:\\powershell\\config\\menu_bigfish_type.json"
+            "submenu": "app\\bigfish\\menu_bigfish_type.json"
         },
         {
             "key"    : "4",

@@ -6,7 +6,7 @@
         {
             "key"    : "1",
             "label"  : "BigFish — Gestion des fichiers",
-            "submenu": "E:\\powershell\\app\\bigfish\\menu_bigfish.json"
+            "submenu": "app\\bigfish\\menu_bigfish.json"
         },
         {
             "key"    : "2",

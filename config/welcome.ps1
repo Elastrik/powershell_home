@@ -81,3 +81,5 @@ function prompt {
 
 
 Set-location $docs
+
+mainmenu

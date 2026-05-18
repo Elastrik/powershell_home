@@ -1,5 +1,5 @@
 {
-    "title": "ELASTRIK TERMINAL v1.0",
+    "title": "~~ MENU TRAVAIL ~~",
     "subtitle": "Que souhaitez-vous faire ?",
     "options": [
         {
@@ -9,33 +9,43 @@
         },
         {
             "key": "2",
-            "label": "Musique",
-            "command": "musique"
+            "label": "Adelia 400",
+            "command": "adelia12"
         },
         {
             "key": "3",
-            "label": "Gaming",
-            "command": "steam"
+            "label": "Adelia Web",
+            "command": "adelia14"
         },
         {
             "key": "4",
-            "label": "Note",
-            "command": "keep"
+            "label": "Teams",
+            "command": "teams"
         },
         {
             "key": "5",
             "label": "Mails",
-            "command": "gmail"
+            "command": "outlook"
         },
         {
             "key": "6",
-            "label": "Excel",
-            "command": "sheet"
+            "label": "Tickets",
+            "command": "tickets"
         },
         {
             "key": "7",
+            "label": "MESNIL AS400",
+            "command": "Mesnil400"
+        },
+        {
+            "key": "8",
+            "label": "MARLY AS400",
+            "command": "Marly400"
+        },
+        {
+            "key": "F",
             "label": "BigFish — Gestion des fichiers",
-            "submenu": "E:\\powershell\\app\\bigfish\\menu.json"
+            "submenu": "app\\bigfish\\menu.json"
         },
          {
             "key"    : "Q",
