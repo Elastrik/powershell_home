@@ -1,36 +1,42 @@
 {
     "title"   : "  ~~~ BIGFISH ~~~  ",
     "subtitle": "  Choisissez une action  ",
+    "color"   : "Cyan",
     "options" : [
         {
             "key"    : "1",
-            "label"  : "Pecher         — les 10 plus gros fichiers du dossier courant",
-            "command": "bigfish fish 10"
+            "label"  : "Pecher         — en fonction de la capacité du filet",
+            "command": "bigfish fish"
         },
         {
             "key"    : "2",
-            "label"  : "Pecher deep    — les 10 plus gros fichiers (sous-dossiers inclus)",
-            "command": "bigfish deepfish 10"
+            "label"  : "Pecher deep    — peche aussi dans les sous répertoires",
+            "command": "bigfish deepfish 10",
+            "color"  : "Gray"
         },
         {
             "key"    : "3",
             "label"  : "Pecher type    — par type de poisson",
-            "submenu": "app\\bigfish\\menu_bigfish_type.json"
+            "submenu": "app\\bigfish\\menu_bigfish_type.json",
+            "color"  : "Yellow" 
         },
         {
             "key"    : "4",
-            "label"  : "Voir le filet  — afficher les poissons peches",
-            "command": "bigfish net"
+            "label"  : "Voir le filet  — Poissons attrapés",
+            "command": "bigfish net",
+            "color"  : "Blue"
         },
         {
             "key"    : "5",
             "label"  : "Vider le filet — relacher sans supprimer",
-            "command": "bigfish net empty"
+            "command": "bigfish net empty",
+            "color"  : "DarkRed"
         },
         {
             "key"    : "6",
             "label"  : "Vendre         — supprimer tout le filet",
-            "command": "bigfish sell"
+            "command": "bigfish sell",
+            "color"  : "DarkYellow"
         },
         {
             "key"    : "7",

@@ -1,0 +1,12 @@
+{
+    "itemsAvailable": [
+        {
+            "name": "Renfort de filet",
+            "description": "Augmente un peu la capacité du filet",
+            "price": 100,
+            "Metadata": {
+                "NetCapacity": 2
+            }
+        }
+    ]
+}

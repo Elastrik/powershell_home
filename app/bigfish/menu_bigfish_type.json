@@ -1,6 +1,7 @@
 {
     "title"   : "  ~~~ BIGFISH — TYPE DE PECHE ~~~  ",
     "subtitle": "  Quel type de poisson cherchez-vous ?  ",
+    "color"   : "Cyan",
     "options" : [
         {
             "key"    : "1",

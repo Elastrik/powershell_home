@@ -3,7 +3,7 @@ class Wallet {
     [long] $valeur
     [string] $SavePath
     [hashtable] $Metadata
-    [string] $devise = '$'
+    [string] $devise = '¥'
 
     Wallet([string] $savePath) {
         $this.SavePath = $savePath
@@ -79,3 +79,11 @@ class WalletRenderer {
         Write-Host ""
     }
 }
+
+
+$global:wallet = [Wallet]::new((Join-path $global:persistent_home_path "wallet.json"))
+function Wallet() {
+    $wrender = [WalletRenderer]::new()
+    $wrender.RenderWallet($global:wallet)
+}
+

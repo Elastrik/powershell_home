@@ -1,21 +1,25 @@
 {
     "title": "~~ MENU VSCODE ~~",
     "subtitle": "Quel workspace ?",
+    "color" : "DarkCyan",
     "options": [
         {
             "key": "1",
             "label": "BIDOUILLE",
-            "command": "codeWs"
+            "command": "codeWs",
+            "color" : "DarkMagenta"
         },
         {
             "key": "2",
             "label": "SQL",
-            "command": "codeWs SQL"
+            "command": "codeWs SQL",
+            "color" : "Blue"
         },
         {
             "key": "3",
             "label": "ZPL",
-            "command": "codeWs ZPL"
+            "command": "codeWs ZPL",
+            "color" : "DarkGray"
         },
         {
             "key": "4",
@@ -24,11 +28,17 @@
         },
         {
             "key": "5",
+            "label": "Powershell",
+            "command": "codeWs PSH",
+            "color" : "Magenta"
+        },
+        {
+            "key": "6",
             "label": "Dev Web",
             "command": "codeWs web"
         },
         {
-            "key": "6",
+            "key": "7",
             "label": "Python",
             "command": "codeWs PYT"
         },

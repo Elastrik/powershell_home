@@ -1,3 +1,37 @@
+$bf_mdp = Join-Path $global:bigfish_path "persistent\profile.json"
+$global:bigfish_metadata = [BigFishProfile]::new($bf_mdp )
+class BigFishProfile {
+    [hashtable] $Metadata
+    [string] $SavePath
+
+    BigFishProfile([string] $savePath) {
+        $this.SavePath = $savePath
+        $this.Metadata = @{}
+        if (Test-Path $savePath) {
+            $data = Get-Content $savePath | ConvertFrom-Json
+           
+            $this.Metadata = @{}
+            if ($data.Metadata) {
+                 $data.Metadata.PSObject.Properties | ForEach-Object {
+                    $this.Metadata[$_.Name] = $_.Value
+                 }
+            }
+        }
+    }
+    [void] SetMetadata([string] $key, [object] $value) {
+        $this.Metadata[$key] = $value
+        $this.Save()
+    }
+    [object] GetMetadata([string] $key) {
+        return $this.Metadata[$key]
+    }
+    [void] Save() {
+        @{
+            Metadata = $this.Metadata
+        } | ConvertTo-Json | Set-Content $this.SavePath
+        $global:bigfish_metadata = $this
+    }
+}
 
 class FishType {
     static [Hashtable] $fishSize = @{
@@ -68,10 +102,18 @@ class FishFile {
 
 class FishNet {
     [System.Collections.Generic.List[FishFile]] $net
+    [int] $capacity = 1
   
 
     FishNet() {
         $this.net = [System.Collections.Generic.List[FishFile]]::new()
+        if($global:bigfish_metadata.Metadata["NetCapacity"]) {
+            $this.capacity = [int]$global:bigfish_metadata.Metadata["NetCapacity"]
+        }else{
+            $this.capacity = 1
+            $global:bigfish_metadata.setMetadata("NetCapacity", $this.capacity)
+            $global:bigfish_metadata.save()
+        }
     }
 
     [FishNet] AddFish([FishFile] $fish) {
@@ -117,50 +159,71 @@ class Fisher {
     [FishNet]   $net
     
     Fisher() {
-        $this.net = New-Object -TypeName FishNet
+        $this.net = [Fishnet]::New()
+    }
+    [Fisher] FishByCapacity() {
+        $capacity = $this.net.capacity
+        Get-ChildItem -File |
+        Sort-Object Length -Descending |
+        Select-Object -First $capacity |
+        ForEach-Object {
+            $fish = [FishFile]::new($_)
+            $this.net.AddFish($fish)
+
+        }
+        return $this
     }
 
     [Fisher] FishByCount([int] $n = 5) {
+        if ($n > $this.net.capacity) {
+            $n = $this.net.capacity
+        }
         Get-ChildItem -File |
         Sort-Object Length -Descending |
         Select-Object -First $n |
         ForEach-Object {
-            $fish = New-Object -TypeName FishFile -ArgumentList $_ 
+            $fish = [FishFile]::new($_)
             $this.net.AddFish($fish)
 
         }
         return $this
     }
     [Fisher] FishByType([string] $typename) {
-        Get-ChildItem -File |
-        Sort-Object Length -Descending |
+        $n = $this.net.capacity
+        Get-ChildItem -File | Where-Object { 
+            $fish = [FishFile]::new($_)
+            $fish.fishType.name -eq $typename
+        } |
+        Sort-Object Length -Descending | Select-Object -First $n |
         ForEach-Object {
-            $fish = New-Object -TypeName FishFile -ArgumentList $_
-            if ($fish.fishType.name -eq $typename) {
-                $this.net.AddFish($fish)
-            }
+            $fish = [FishFile]::new($_)
+            $this.net.AddFish($fish)
+
         }
         return $this
     }
     [Fisher] DeepFishByCount([int] $count = 5) {
-            
+        if($count -gt $this.net.capacity) {
+            $count = $this.net.capacity
+        }
         Get-ChildItem -Recurse -File |
         Sort-Object Length -Descending |
         Select-Object -First $count |
         ForEach-Object {
-            $fish = New-Object -TypeName FishFile -ArgumentList $_
+            $fish = [FishFile]::new($_)
             $this.net.AddFish($fish)
         }
         return $this
     }
     [Fisher] DeepFishByType([string] $typename) {
-        Get-ChildItem -File -Recurse |
-        Sort-Object Length -Descending |
+        Get-ChildItem -File -Recurse | Where-Object { 
+            $fish = [FishFile]::new($_)
+            $fish.fishType.name -eq $typename
+        } |
+        Sort-Object Length -Descending | Select-Object - First $this.net.capacity
         ForEach-Object {
-            $fish = New-Object -TypeName FishFile -ArgumentList $_
-            if ($fish.fishType.name -eq $typename) {
-                $this.net.AddFish($fish)
-            }
+            $fish = [FishFile]::new($_)
+            $this.net.AddFish($fish)
         }
         return $this
     }
@@ -188,7 +251,7 @@ class FishRenderer {
             Write-Host "~~ A VENDRE ~~" -ForegroundColor $netColor    
         }
         Write-Host "#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#" -ForegroundColor $netColor
-        Write-Host "-#-#-#- [$(([String]$bf.fisher.net.net.count).PadLeft(4,' '))] poissons dans le filet -#-#-#-" -ForegroundColor $netColor
+        Write-Host "-#-#- [$(([String]$bf.fisher.net.net.count).PadLeft(4,' '))/$(([String]$bf.fisher.net.capacity).PadLeft(4,' '))] poissons dans le filet -#-#-" -ForegroundColor $netColor
         if ([string]::IsNullOrEmpty($type)) {
 
             foreach ($fish in $bf.Fisher.net.net) {
@@ -354,7 +417,7 @@ class BigFish {
     BigFish() {
         $this.Fisher = [Fisher]::new()
         $this.Renderer = [FishRenderer]::new()
-        $wallet_path = Join-path $global:wallet_path 'wallet.json'
+        $wallet_path = Join-path $global:persistent_home_path 'wallet.json'
         $this.wallet = [FishWallet]::new($wallet_path)
 
     }
@@ -375,12 +438,17 @@ class BigFish {
     }
 
     [void] Fish([string] $param) {
-        # arg peut être un nombre ou un type de poisson
-        if ($param -match '^\d+$') {
-            $this.Fisher.FishByCount([int]$param)
-        }
-        else {
-            $this.Fisher.FishByType($param)
+        if($param){
+            $this.Fisher.FishByCapacity()
+        }else{
+            # arg peut être un nombre ou un type de poisson
+
+            if ($param -match '^\d+$') {
+                $this.Fisher.FishByCount([int]$param)
+            }
+            else {
+                $this.Fisher.FishByType($param)
+            }
         }
         $this.Renderer.RenderNet($this)
     }
@@ -431,3 +499,11 @@ class BigFish {
     }
 
 }
+
+# fonction associées
+$bigFish = [BigFish]::new()
+
+function bigfish {
+    $bigfish.Execute($args)
+}
+Set-Alias bf bigfish

@@ -30,19 +30,24 @@ function teams {
 function outlook {
     Start-Process "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
 }
+function gitHubDesktop {
+    Start-Process "C:\Users\vledoux\AppData\Local\GitHubDesktop\GitHubDesktop.exe"
+}
+
 
 # Ouvre une session RDP via un fichier .rdp
 function Start-RDP {
     param(
         [string]$RdpFile = ""
     )
-     if ([string]::IsNullOrEmpty($RdpFile)) {
+    if ([string]::IsNullOrEmpty($RdpFile)) {
         $RdpFile = Join-Path $global:desk "Adelia V14_sed02.rdp"
     }
 
     if (Test-Path -Path $RdpFile) {
         Start-Process -FilePath $RdpFile
-    } else {
+    }
+    else {
         Write-Host " Fichier RDP introuvable : $RdpFile" -ForegroundColor Red
     }
 }
@@ -66,7 +71,8 @@ function Start-IBM {
 
     if (Test-Path -Path $File) {
         Start-Process -FilePath $File
-    } else {
+    }
+    else {
         Write-Host "❌ Fichier introuvable : $File" -ForegroundColor Red
     }
 }
@@ -120,15 +126,7 @@ $wallet_class = Join-Path $global:wallet_class_path "wallet.ps1"
 
 $bigfish_class = Join-Path $global:bigfish_path  "bigfish.ps1" 
 . $bigfish_class
-$bigFish = [BigFish]::new()
 
-function bigfish {
-    $bigfish.Execute($args)
-}
-Set-Alias bf bigfish
-
-# Charger la configuration depuis un fichier externe
-# ."E:\powershell\app\menu\menu.ps1"
 
 # main menu
 function mainmenu {
@@ -137,25 +135,31 @@ function mainmenu {
     $mm.show()
 }
 
-$global:wallet = [Wallet]::new((Join-path $global:wallet_path "wallet.json"))
-function Wallet(){
-    $wrender = [WalletRenderer]::new()
-    $wrender.RenderWallet($global:wallet)
-}
-
 Set-Alias mm mainmenu
 
 
 
 function codeWS ($workspace) {
     switch ($workspace) {
-        'SQL' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\SQL_WORKSPACE.code-workspace" }
-        'SSH' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\SSH_WORKSPACE.code-workspace" }
-        'EXT' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\VSCODE_EXTENSIONS.code-workspace" }
-        'ZPL' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\ZPL_WORKSPACE.code-workspace" }
-        'WEB' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\htdocs.code-workspace" }
-        'PYT' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\Python.code-workspace" }
-        Default {$path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\BIDOUILLE_WORKSPACE.code-workspace"}
+        'SQL' { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\SQL_WORKSPACE.code-workspace" }
+        'SSH' { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\SSH_WORKSPACE.code-workspace" }
+        'EXT' { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\VSCODE_EXTENSIONS.code-workspace" }
+        'ZPL' { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\ZPL_WORKSPACE.code-workspace" }
+        'WEB' { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\htdocs.code-workspace" }
+        'PYT' { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\Python.code-workspace" }
+        'PSH' { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\Powershell.code-workspace" }
+        Default { $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\BIDOUILLE_WORKSPACE.code-workspace" }
     }
     code --new-window $path
 }
+
+function ShowColors() {
+    $colors = [enum]::GetValues([System.ConsoleColor])
+    Foreach ($bgcolor in $colors) {
+        Foreach ($fgcolor in $colors) { Write-Host "$fgcolor|"  -ForegroundColor $fgcolor -BackgroundColor $bgcolor -NoNewLine }
+        Write-Host " on $bgcolor"
+    }
+}
+
+
+. $global:powershell_folder\app\merchant\merchant.ps1

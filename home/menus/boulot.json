@@ -1,26 +1,38 @@
 {
     "title": "~~ MENU TRAVAIL ~~",
     "subtitle": "Que souhaitez-vous faire ?",
+    "color" : "Green",
     "options": [
         {
             "key": "1",
             "label": "Outils",
-            "submenu": "home\\menus\\outil_boulot.json"
+            "submenu": "home\\menus\\outil_boulot.json",
+            "color" : "DarkMagenta"
+
         },
         {
             "key": "2",
             "label": "Machines (RDP/400)",
-            "submenu": "home\\menus\\machine_boulot.json"
+            "submenu": "home\\menus\\machine_boulot.json",
+            "color" : "DarkYellow"
         },
         {
             "key": "3",
             "label": "VSCODE Workspace",
-            "submenu": "home\\menus\\vscode_boulot.json"
+            "submenu": "home\\menus\\vscode_boulot.json",
+            "color" : "DarkCyan"
+        },
+        {
+            "key": "4",
+            "label": "GitHub Desktop",
+            "command": "gitHubDesktop",
+            "color" : "Magenta"
         },
         {
             "key": "9",
             "label": "Youtube",
-            "command": "youtube"
+            "command": "youtube",
+            "color" : "Red"
         },
         {
             "key": "F",

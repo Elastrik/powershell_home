@@ -99,7 +99,7 @@ function WelcomeSed (){
         $welcome.RenderMessage("Encore du travail ? ")        
         $welcome.RenderWallet()
       
-        mainmenu
+        # mainmenu
         
     }
 

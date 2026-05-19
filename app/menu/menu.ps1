@@ -3,12 +3,14 @@ class MenuItem {
     [string] $Label
     [string] $Command
     [string] $Submenu
+    [string] $Color
 
     MenuItem([PSCustomObject] $data) {
         $this.Key = $data.key
         $this.Label = $data.label
         $this.Command = if ($data.command) { $data.command } else { "" }
         $this.Submenu = if ($data.submenu) { $data.submenu } else { "" }
+        $this.Color = if ($data.color) { $data.color } else { "White" }
     }
 }
 
@@ -18,15 +20,29 @@ class Menu {
     [string]      $Header
     [MenuItem[]]  $Options
     [scriptblock] $HeaderBlock   # bloc de code à exécuter avant le rendu
+    [string]      $Color
 
-    Menu([string] $jsonPath) {
-        $data = Get-Content $jsonPath | ConvertFrom-Json
+
+    Menu([string] $input) {
+        if (Test-Path $input -PathType Leaf) {
+            # C'est un fichier, on le lit
+            $data = Get-Content $input | ConvertFrom-Json
+        } else {
+            # On suppose que c'est une chaîne JSON
+            try {
+                $data = $input | ConvertFrom-Json
+            } catch {
+                throw "L'entrée n'est ni un chemin de fichier valide ni un JSON valide : $_"
+            }
+        }
         $this.Title = $data.title
         $this.Subtitle = $data.subtitle
         $this.Header = $data.header
         $this.Options = $data.options | ForEach-Object { [MenuItem]::new($_) }
         $this.HeaderBlock = $null
+        $this.Color = $data.color     
     }
+
     Menu([string] $jsonPath, [scriptblock] $block) {
         $data = Get-Content $jsonPath | ConvertFrom-Json
         $this.Title = $data.title
@@ -34,6 +50,7 @@ class Menu {
         $this.Header = $data.header
         $this.Options = $data.options | ForEach-Object { [MenuItem]::new($_) }
         $this.HeaderBlock = $block
+        $this.Color = $data.color
     }
 
 
@@ -44,7 +61,8 @@ class Menu {
 
 
     static [string] ResolvePath([string]$path) {
-        if ($path -like "*:*") {  # Chemin absolu (ex: C:\...)
+        if ($path -like "*:*") {
+            # Chemin absolu (ex: C:\...)
             return $path
         }
         return Join-Path $global:PSConfigRoot $path
@@ -57,29 +75,43 @@ class Menu {
         }
 
         $width = 50
+        $this.options | ForEach-Object {
+            $optionLength = $_.Label.Length + 4
+            if ($optionLength -gt $width) {
+                $width = $optionLength
+            }
+        }
+        $width += 4
+        $Width = [math]::Max($width, [math]::Max($this.Title.Length + 4, $this.Subtitle.Length + 4))
+
+
         $line = "═" * $width
-        Write-Host "╔$line╗" -ForegroundColor Blue
 
-        Write-Host "║ " -ForegroundColor Blue -NoNewline 
+        $cadre_color = if ($this.Color) { $this.Color } else { "Blue" } 
+
+        Write-Host "╔$line╗" -ForegroundColor $cadre_color
+
+        Write-Host "║ " -ForegroundColor $cadre_color -NoNewline 
         write-host "$($this.Title.PadRight($width - 1))" -ForegroundColor Cyan -NoNewline
-        write-host "║" -ForegroundColor Blue
+        write-host "║" -ForegroundColor $cadre_color
 
-        Write-Host "║ " -ForegroundColor Blue -NoNewline
+        Write-Host "║ " -ForegroundColor $cadre_color -NoNewline
         Write-Host "$($this.Subtitle.PadRight($width - 1))" -ForegroundColor white -NoNewline
-        Write-Host "║" -ForegroundColor Blue
-        Write-Host "╠$line╣" -ForegroundColor Blue
+        Write-Host "║" -ForegroundColor $cadre_color
+        Write-Host "╠$line╣" -ForegroundColor $cadre_color
         foreach ($option in $this.Options) {
             $label = "  $($option.Key).  $($option.Label)"
-            Write-Host "║ " -ForegroundColor  Blue -NoNewline
-            Write-Host "$($label.PadRight($width - 1))" -ForegroundColor white -NoNewline
-            Write-Host "║" -ForegroundColor Blue
+            Write-Host "║ " -ForegroundColor  $cadre_color -NoNewline
+            Write-Host "$($label.PadRight($width - 1))" -ForegroundColor $option.Color -NoNewline
+            Write-Host "║" -ForegroundColor $cadre_color
         }
-        Write-Host "╚$line╝" -ForegroundColor Blue
+        Write-Host "╚$line╝" -ForegroundColor $cadre_color
         Write-Host ""
     }
 
     [void] Show() {
-        while ($true) {
+        $stop = $false
+        while ($true -and -not $stop) {
             
             $this.Render()
         
@@ -110,17 +142,23 @@ class Menu {
                 $submenuPath = [Menu]::ResolvePath($selected.Submenu)
                 if (-not [string]::IsNullOrEmpty($selected.Command)) {
                     $sub = [Menu]::new($submenuPath, $selected.Command)
-                } else {
+                }
+                else {
                     $sub = [Menu]::new($submenuPath)
                 }
                 $sub.Show()
                 continue
             }
-
-
-            # Commande normale
+            
             Invoke-Expression $selected.Command
-            Read-Host "  [Entrée pour revenir]"
+            # Commande normale
+            if ( $selected.Command.startsWith("ssh")) {
+                $stop = $true
+            }else{
+                Read-Host "  [Entrée pour revenir]"
+            }
+
+
         }
     }
 }

@@ -1,21 +1,25 @@
 {
     "title": "~~ Outils et liens ~~",
     "subtitle": "Teams, mail, tickets",
+    "color" : "DarkMagenta",
     "options": [
         {
             "key": "1",
             "label": "Teams",
-            "command": "teams"
+            "command": "teams",
+            "color" : "DarkMagenta"
         },
         {
             "key": "2",
             "label": "Mails",
-            "command": "outlook"
+            "command": "outlook",
+            "color" : "DarkBLue"
         },
         {
             "key": "3",
             "label": "Tickets",
-            "command": "tickets"
+            "command": "tickets",
+            "color" : "Gray"
         },
         {
             "key": "Q",
