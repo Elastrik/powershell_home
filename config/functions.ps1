@@ -145,3 +145,17 @@ function Wallet(){
 
 Set-Alias mm mainmenu
 
+
+
+function codeWS ($workspace) {
+    switch ($workspace) {
+        'SQL' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\SQL_WORKSPACE.code-workspace" }
+        'SSH' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\SSH_WORKSPACE.code-workspace" }
+        'EXT' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\VSCODE_EXTENSIONS.code-workspace" }
+        'ZPL' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\ZPL_WORKSPACE.code-workspace" }
+        'WEB' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\htdocs.code-workspace" }
+        'PYT' {  $path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\Python.code-workspace" }
+        Default {$path = "C:\Users\vledoux\OneDrive - SED\home\VSCODE\BIDOUILLE_WORKSPACE.code-workspace"}
+    }
+    code --new-window $path
+}

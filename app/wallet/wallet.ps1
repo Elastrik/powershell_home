@@ -28,6 +28,7 @@ class Wallet {
             valeur    = $this.valeur
             Metadata = $this.Metadata
         } | ConvertTo-Json | Set-Content $this.SavePath
+        $global:wallet = $this
     }
 
     [void] AddValue([long] $amount) {

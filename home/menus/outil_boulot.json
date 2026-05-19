@@ -1,0 +1,26 @@
+{
+    "title": "~~ Outils et liens ~~",
+    "subtitle": "Teams, mail, tickets",
+    "options": [
+        {
+            "key": "1",
+            "label": "Teams",
+            "command": "teams"
+        },
+        {
+            "key": "2",
+            "label": "Mails",
+            "command": "outlook"
+        },
+        {
+            "key": "3",
+            "label": "Tickets",
+            "command": "tickets"
+        },
+        {
+            "key": "Q",
+            "label": "Quitter",
+            "command": "exit"
+        }
+    ]
+}

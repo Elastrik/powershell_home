@@ -16,6 +16,22 @@ class welcome {
             Write-Host $logo[$i] -ForegroundColor $colors[$i]
         }
     }
+     [void] RenderLogoSed (){
+           $logo = @(
+            "   ███████╗███████╗██████╗ "
+            "   ██╔════╝██╔════╝██╔══██╗"
+            "   ███████╗█████╗  ██║  ██║"
+            "   ╚════██║██╔══╝  ██║  ██║"
+            "   ███████║███████╗██████╔╝"
+            "   ╚══════╝╚══════╝╚═════╝"
+        )
+
+        $colors = @("DarkBlue", "DarkBlue", "Cyan", "Cyan", "Yellow", "Yellow")
+
+        for ($i = 0; $i -lt $logo.Length; $i++) {
+            Write-Host $logo[$i] -ForegroundColor $colors[$i]
+        }
+    }
     [void] RenderSystemInfo(){
         $date = Get-Date -Format "dddd dd/MM/yyyy  HH:mm"
         # $psVersion = $PSVersionTable.PSVersion.ToString()
@@ -27,7 +43,7 @@ class welcome {
         Write-Host "  heure    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $date              -ForegroundColor Yellow
     } 
     [void] RenderMeteo([string] $location){
-        $meteo_chezy = (Invoke-WebRequest "wttr.in/]$($location)?format=3" -UseBasicParsing).Content.Trim()
+        $meteo_chezy = (Invoke-WebRequest "wttr.in/$($location)?format=3" -UseBasicParsing).Content.Trim()
 
         Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
         Write-Host "  météo    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $meteo_chezy       -ForegroundColor Cyan
@@ -65,7 +81,26 @@ function Welcome (){
       
         mainmenu
         
+    }
 
+}
+
+function WelcomeSed (){
+    
+    
+    if ($Host.UI.RawUI) {
+        
+        $welcome = [Welcome]::New()
+       
+        $welcome.RenderLogoSed()
+        $welcome.RenderSystemInfo()
+        $welcome.RenderDiskInfo()
+        $welcome.RenderMeteo("moussy-le-vieux")
+        $welcome.RenderMessage("Encore du travail ? ")        
+        $welcome.RenderWallet()
+      
+        mainmenu
+        
     }
 
 }
@@ -112,6 +147,3 @@ function prompt {
     return " > "
 }
 
-
-Set-location $docs
-welcome

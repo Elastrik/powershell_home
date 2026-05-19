@@ -1,0 +1,41 @@
+{
+    "title": "~~ MENU VSCODE ~~",
+    "subtitle": "Quel workspace ?",
+    "options": [
+        {
+            "key": "1",
+            "label": "BIDOUILLE",
+            "command": "codeWs"
+        },
+        {
+            "key": "2",
+            "label": "SQL",
+            "command": "codeWs SQL"
+        },
+        {
+            "key": "3",
+            "label": "ZPL",
+            "command": "codeWs ZPL"
+        },
+        {
+            "key": "4",
+            "label": "Extension VSCODE",
+            "command": "codeWs EXT"
+        },
+        {
+            "key": "5",
+            "label": "Dev Web",
+            "command": "codeWs web"
+        },
+        {
+            "key": "6",
+            "label": "Python",
+            "command": "codeWs PYT"
+        },
+         {
+            "key"    : "Q",
+            "label"  : "Quitter",
+            "command": "exit"
+        }
+    ]
+}

@@ -4,52 +4,32 @@
     "options": [
         {
             "key": "1",
-            "label": "Youtube",
-            "command": "youtube"
+            "label": "Outils",
+            "submenu": "home\\menus\\outil_boulot.json"
         },
         {
             "key": "2",
-            "label": "Adelia 400",
-            "command": "adelia12"
+            "label": "Machines (RDP/400)",
+            "submenu": "home\\menus\\machine_boulot.json"
         },
         {
             "key": "3",
-            "label": "Adelia Web",
-            "command": "adelia14"
+            "label": "VSCODE Workspace",
+            "submenu": "home\\menus\\vscode_boulot.json"
         },
         {
-            "key": "4",
-            "label": "Teams",
-            "command": "teams"
-        },
-        {
-            "key": "5",
-            "label": "Mails",
-            "command": "outlook"
-        },
-        {
-            "key": "6",
-            "label": "Tickets",
-            "command": "tickets"
-        },
-        {
-            "key": "7",
-            "label": "MESNIL AS400",
-            "command": "Mesnil400"
-        },
-        {
-            "key": "8",
-            "label": "MARLY AS400",
-            "command": "Marly400"
+            "key": "9",
+            "label": "Youtube",
+            "command": "youtube"
         },
         {
             "key": "F",
             "label": "BigFish — Gestion des fichiers",
             "submenu": "app\\bigfish\\menu.json"
         },
-         {
-            "key"    : "Q",
-            "label"  : "Quitter",
+        {
+            "key": "Q",
+            "label": "Quitter",
             "command": "exit"
         }
     ]

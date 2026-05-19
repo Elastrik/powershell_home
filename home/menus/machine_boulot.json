@@ -1,0 +1,31 @@
+{
+    "title": "~~ MENU MACHINES ~~",
+    "subtitle": "VM et AS400",
+    "options": [
+        {
+            "key": "1",
+            "label": "Adelia Web",
+            "command": "adelia14"
+        },
+        {
+            "key": "2",
+            "label": "Adelia 400",
+            "command": "adelia12"
+        },
+        {
+            "key": "3",
+            "label": "AS400 MESNIL",
+            "command": "Mesnil400"
+        },
+        {
+            "key": "4",
+            "label": "AS400 MARLY",
+            "command": "Marly400"
+        },
+        {
+            "key": "Q",
+            "label": "Quitter",
+            "command": "exit"
+        }
+    ]
+}
