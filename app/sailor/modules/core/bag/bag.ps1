@@ -222,16 +222,6 @@ class Bag {
     }
 }
 
-function Bag {
-    $bag = $global:bag
-    
-    if ($null -eq $bag) {
-        Write-Host "✗ Le sac n'est pas initialisé" -ForegroundColor Red
-        return
-    }
 
-    $renderer = [BagRenderer]::new()
-    $renderer.RenderBag($bag)
-}
 
 # Set-Alias bd Bag

@@ -120,23 +120,6 @@ function diskbar {
 #menus 
 $menu_class = Join-Path $global:menu_class_path "menu.ps1" 
 . $menu_class
-
-$wallet_class = Join-Path $global:wallet_class_path "wallet.ps1"
-. $wallet_class
-# programme bag (inventaire)
-$bag_class = Join-Path $global:bag_class_path "bag.ps1"
-. $bag_class
-# programme merchant
-$merchant_class = Join-Path $global:merchant_class_path "merchant.ps1"
-. $merchant_class
-
-
-
-## app
-$bigfish_class = Join-Path $global:bigfish_path  "bigfish.ps1" 
-. $bigfish_class
-
-
 # main menu
 function mainmenu {
     

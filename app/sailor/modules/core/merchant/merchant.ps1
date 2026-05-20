@@ -130,7 +130,7 @@ class Merchant {
                     $option = @{
                         key     = $optionIndex.ToString()
                         label   = "$($item.name) - $($item.price) $(if ($global:wallet.devise) { $global:wallet.devise } else { '$' }) (x$($item.quantity))"
-                        command = @("MerchantSell '$($item.name)'", "exit")    
+                        command = @("[Merchant]::MerchantSell() '$($item.name)'", "exit")    
                         color   = "$($optionColor)"
                     }
                 } else {
@@ -172,40 +172,21 @@ class Merchant {
         return $menu | ConvertTo-Json -Depth 5
     }
 
-    
+    static [void ] MerchantSell ([string] $itemName) {
+        
+        $merchant = $global:Merchant_profile
+        $bag = $global:bag
+        $wallet = $global:wallet
+
+        if ($merchant.IsAvailable($itemName)) {
+            $merchant.SellItem($itemName, $bag, $wallet)
+            Write-Host " ** Vous avez acheté : $itemName" -ForegroundColor Green
+        }
+        else {
+            Write-Host "Désolé, cet article n'est pas disponible." -ForegroundColor Red
+        }
+    }
+
 }
 
 
-function Merchant {
-    $merchant = $global:Merchant_profile
-    if ($merchant.itemsAvailable.Count -eq 0) {
-        Write-Host "Le marchand n'a rien à vendre pour le moment." -ForegroundColor Gray
-        return
-    }
-    
-    $menuData = $merchant.GetJsonMenu()
-    $menu = [Menu]::new($menuData)
-    $choice = $menu.Show()
-    while ($choice -ne "Q") {
-        $menuData = $merchant.GetJsonMenu()
-        $menu = [Menu]::new($menuData)
-        $choice = $menu.Show()
-    }
-}
-
-function MerchantSell {
-    param (
-        [string] $itemName
-    )
-    $merchant = $global:Merchant_profile
-    $bag = $global:bag
-    $wallet = $global:wallet
-
-    if ($merchant.IsAvailable($itemName)) {
-        $merchant.SellItem($itemName, $bag, $wallet)
-        Write-Host " ** Vous avez acheté : $itemName" -ForegroundColor Green
-    }
-    else {
-        Write-Host "Désolé, cet article n'est pas disponible." -ForegroundColor Red
-    }
-}

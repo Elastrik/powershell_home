@@ -19,7 +19,6 @@ $global:bag_class_path = Join-Path $global:powershell_core "bag"
 $global:merchant_class_path = Join-Path $global:powershell_core "merchant"
 
 # applications
-$global:bigfish_path = Join-Path $global:powershell_app  "bigfish"  # Chemin relatif vers tradsh.ps1
 
 
 # $global:tradsh_path = Join-Path $global:PSConfigRoot "config\tradsh.ps1"  # Chemin relatif vers tradsh.ps1
