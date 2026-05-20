@@ -42,6 +42,11 @@
             "label": "Python",
             "command": "codeWs PYT"
         },
+        {
+            "key": "R",
+            "label": "Retour",
+            "command": "back"
+        },
          {
             "key"    : "Q",
             "label"  : "Quitter",

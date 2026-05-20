@@ -37,6 +37,12 @@
             "label": "SSH Kettlebox 2 Facturation",
             "command": "ssh kettle@kettlebox2"
         },
+        
+        {
+            "key": "R",
+            "label": "Retour",
+            "command": "back"
+        },
         {
             "key": "Q",
             "label": "Quitter",

@@ -22,6 +22,11 @@
             "color" : "Gray"
         },
         {
+            "key": "R",
+            "label": "Retour",
+            "command": "back"
+        },
+        {
             "key": "Q",
             "label": "Quitter",
             "command": "exit"

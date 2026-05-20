@@ -116,7 +116,7 @@ class Merchant {
     [string] GetJsonMenu() {
         $menu = @{
             title    = "Marchand"
-            subtitle = "Que souhaitez-vous acheter ?"
+            subtitle = "solde :  $($global:wallet.valeur) $($global:wallet.devise)"
             color    = "DarkYellow"
             options  = @()
         }
@@ -125,12 +125,24 @@ class Merchant {
         foreach ($item in $this.itemsAvailable) {
              
             if ($item.IsAvailable()) {
-                $option = @{
-                    key     = $optionIndex.ToString()
-                    label   = "$($item.name) - $($item.price) $(if ($global:wallet.devise) { $global:wallet.devise } else { '$' }) (x$($item.quantity))"
-                    command = @("MerchantSell '$($item.name)'", "exit")
+                if($item.isAffordable()) {
+                    $optionColor = "Yellow"
+                    $option = @{
+                        key     = $optionIndex.ToString()
+                        label   = "$($item.name) - $($item.price) $(if ($global:wallet.devise) { $global:wallet.devise } else { '$' }) (x$($item.quantity))"
+                        command = @("MerchantSell '$($item.name)'", "exit")    
+                        color   = "$($optionColor)"
+                    }
+                } else {
+                    $optionColor = "Gray"
 
-                    color   = "Yellow"
+                    $option = @{
+                        key     = $optionIndex.ToString()
+                        label   = "$($item.name) - $($item.price) $(if ($global:wallet.devise) { $global:wallet.devise } else { '$' }) (x$($item.quantity))"
+                        command = @("Write-host 'Solde insuffisant' -ForegroundColor Red")
+                        color   = "$($optionColor)"
+                    }
+                
                 }
                 $menu.options += $option
                 $optionIndex++
@@ -151,9 +163,9 @@ class Merchant {
         }
 
         $options = @{
-            key     = "Q"
-            label   = "Au revoir"
-            command = "exit"
+            key     = "R"
+            label   = "Au revoir !"
+            command = "back"
             color   = "Gray"
         }
         $menu.options += $options

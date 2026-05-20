@@ -47,7 +47,7 @@
         {
             "key": "F",
             "label": "BigFish — Gestion des fichiers",
-            "submenu": "app\\bigfish\\menu.json"
+            "command": "bigfish"
         },
          {
             "key"    : "Q",

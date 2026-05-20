@@ -28,6 +28,13 @@ class Item {
     [bool] IsAvailable() {
         return $this.quantity -gt 0
     }
+    [bool] isAffordable() {
+        $account = 0 
+        if($global:wallet.valeur) {
+            $account = $global:wallet.valeur
+        }
+        return $account -ge $this.price
+    }
 }
 
 

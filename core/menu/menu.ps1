@@ -88,6 +88,8 @@ class Menu {
         $width += 4
         $Width = [math]::Max($width, [math]::Max($this.Title.Length + 4, $this.Subtitle.Length + 4))
 
+        $bar = "_" * 80
+        write-host $bar -ForegroundColor DarkGray
 
         $line = "═" * $width
 
@@ -121,7 +123,11 @@ class Menu {
             $this.Render()
             write-Host "Votre choix" -ForegroundColor Yellow -NoNewline
             $choice = Read-Host " " 
-             $selected = $this.Options | Where-Object { $_.Key -eq $choice }
+                
+            $bar = "_" * 80
+            write-host $bar -ForegroundColor DarkGray
+            
+            $selected = $this.Options | Where-Object { $_.Key -eq $choice }
 
             if ($null -eq $selected) {
                 Write-Host "  Choix invalide" -ForegroundColor Red
@@ -151,8 +157,13 @@ class Menu {
                     $shouldExit = $true
                     return $choice   # quitte le ForEach
                 }
+                # write-host "Exécution de la commande : $cmd" -ForegroundColor Green
 
-                Invoke-Expression $cmd
+                $cmdReturn = Invoke-Expression $cmd
+                if ($cmdReturn -eq "Q" -or $cmdReturn -eq "q") {
+                    $shouldExit = $true
+                    return $choice   # quitte le ForEach
+                }
             }
 
             if ($shouldExit) { 
@@ -161,6 +172,8 @@ class Menu {
 
      
         }
+
         return $choice   
+
     }
 }
