@@ -1,7 +1,7 @@
 class MenuItem {
     [string] $Key
     [string] $Label
-    [string] $Command
+    [string[]] $Command
     [string] $Submenu
     [string] $Color
 
@@ -24,15 +24,19 @@ class Menu {
 
 
     Menu([string] $input) {
-        if (Test-Path $input -PathType Leaf) {
-            # C'est un fichier, on le lit
-            $data = Get-Content $input | ConvertFrom-Json
+         $resolvedInput = $input
+
+        if (-not [System.IO.Path]::IsPathRooted($input)) {
+            $resolvedInput = Join-Path $global:powershell_folder $input
+        }
+
+        if (Test-Path $resolvedInput -PathType Leaf) {
+            $data = Get-Content $resolvedInput | ConvertFrom-Json
         } else {
-            # On suppose que c'est une chaîne JSON
             try {
                 $data = $input | ConvertFrom-Json
             } catch {
-                throw "L'entrée n'est ni un chemin de fichier valide ni un JSON valide : $_"
+                throw "L'entrée n'est ni un chemin valide ni du JSON : $_"
             }
         }
         $this.Title = $data.title
@@ -109,14 +113,15 @@ class Menu {
         Write-Host ""
     }
 
-    [void] Show() {
+    [String] Show() {
         $stop = $false
+        $choice = ""
         while ($true -and -not $stop) {
             
             $this.Render()
-        
-            $choice = Read-Host "  Votre choix"
-            $selected = $this.Options | Where-Object { $_.Key -eq $choice }
+            write-Host "Votre choix" -ForegroundColor Yellow -NoNewline
+            $choice = Read-Host " " 
+             $selected = $this.Options | Where-Object { $_.Key -eq $choice }
 
             if ($null -eq $selected) {
                 Write-Host "  Choix invalide" -ForegroundColor Red
@@ -124,41 +129,38 @@ class Menu {
                 continue
             }
 
-            # Quitter
-            if ($selected.Command -eq "exit") { return }
-
-            # Retour menu parent
-            if ($selected.Command -eq "back") { return }
-
-            # Sous-menu via instance déjà créée dans le profil
             if (-not [string]::IsNullOrEmpty($selected.Instance)) {
                 $subMenu = (Get-Variable -Name $selected.Instance -ErrorAction SilentlyContinue).Value
                 if ($null -ne $subMenu) { $subMenu.Show() }
-                continue
+                return $choice  
             }
 
-            # Sous-menu via fichier JSON
             if (-not [string]::IsNullOrEmpty($selected.Submenu)) {
-                $submenuPath = [Menu]::ResolvePath($selected.Submenu)
-                if (-not [string]::IsNullOrEmpty($selected.Command)) {
-                    $sub = [Menu]::new($submenuPath, $selected.Command)
-                }
-                else {
-                    $sub = [Menu]::new($submenuPath)
-                }
+                $sub = [Menu]::new($selected.Submenu)
                 $sub.Show()
-                continue
+                return $choice  
             }
+
+
+            $shouldExit = $false
             
-            Invoke-Expression $selected.Command
-            # Commande normale
-            if ( $selected.Command.startsWith("ssh")) {
-                $stop = $true
-            }else{
-                Read-Host "  [Entrée pour revenir]"
+            $selected.Command | ForEach-Object {
+                $cmd = $_
+
+                if ($cmd -eq "exit" -or $cmd -eq "back") {
+                    $shouldExit = $true
+                    return $choice   # quitte le ForEach
+                }
+
+                Invoke-Expression $cmd
             }
 
+            if ($shouldExit) { 
+                return $choice  
+            }
 
+     
         }
+        return $choice   
     }
 }

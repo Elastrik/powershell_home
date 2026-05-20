@@ -1,13 +1,13 @@
 # variables
 # Charger la configuration depuis un fichier externe
-$tradsh = $tradsh_path
-if (Test-Path -Path $tradsh) {
-    Set-Alias tradsh $tradsh
-}
-else {
-    Write-Host "⚠️  Fichier tradsh introuvable : $externalProfilePath" -ForegroundColor Yellow
-    Write-Host "Vérifiez que le disque externe est connecté." -ForegroundColor Yellow
-}
+# $tradsh = $tradsh_path
+# if (Test-Path -Path $tradsh) {
+#     Set-Alias tradsh $tradsh
+# }
+# else {
+#     Write-Host "⚠️  Fichier tradsh introuvable : $externalProfilePath" -ForegroundColor Yellow
+#     Write-Host "Vérifiez que le disque externe est connecté." -ForegroundColor Yellow
+# }
 
 function browser($url) { Start-Process $url }
 
@@ -116,14 +116,23 @@ function diskbar {
     }
 }
 
+##core 
 #menus 
-$menu_class = Join-Path $global:menu_path "menu.ps1" 
+$menu_class = Join-Path $global:menu_class_path "menu.ps1" 
 . $menu_class
 
 $wallet_class = Join-Path $global:wallet_class_path "wallet.ps1"
 . $wallet_class
-# programme bigfish
+# programme bag (inventaire)
+$bag_class = Join-Path $global:bag_class_path "bag.ps1"
+. $bag_class
+# programme merchant
+$merchant_class = Join-Path $global:merchant_class_path "merchant.ps1"
+. $merchant_class
 
+
+
+## app
 $bigfish_class = Join-Path $global:bigfish_path  "bigfish.ps1" 
 . $bigfish_class
 
@@ -162,4 +171,3 @@ function ShowColors() {
 }
 
 
-. $global:powershell_folder\app\merchant\merchant.ps1

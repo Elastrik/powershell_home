@@ -1,5 +1,6 @@
 $bf_mdp = Join-Path $global:bigfish_path "persistent\profile.json"
 $global:bigfish_metadata = [BigFishProfile]::new($bf_mdp )
+
 class BigFishProfile {
     [hashtable] $Metadata
     [string] $SavePath
