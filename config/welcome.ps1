@@ -79,7 +79,7 @@ function Welcome (){
         $welcome.RenderMeteo("chezy-sur-marne")
         $welcome.RenderMessage("Bienvenue sur la pucellerie")        
       
-        mainmenu
+        # mainmenu
         
     }
 

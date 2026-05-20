@@ -125,7 +125,7 @@ class FishNet {
         }
         return $this.capacity + $modifiers
     }
-    [bool] canGoDeep(){
+    [bool] canGoDeep() {
         $canGoDeep = $false
         $global:bag.items | ForEach-Object {
             if ($_.Metadata["CanGoDeep"] -and $_.Metadata["CanGoDeep"] -eq "true") {
@@ -185,7 +185,7 @@ class Fisher {
         return $this
     }
     [Fisher] DeepFishByCount([int] $count = 5) {
-        if($count -gt $this.net.getCapacity()) {
+        if ($count -gt $this.net.getCapacity()) {
             $count = $this.net.getCapacity()
         }
         Get-ChildItem -Recurse -File |
@@ -383,8 +383,8 @@ class BigFishMenu {
         $options = @{
             key     = ($optionIndex++).ToString()
             label   = "Naviguer"
-            command = "write-host 'Pas encore disponible' -ForegroundColor Red"
-            color   = "Red"
+            command = "[Menu]::New([BigFishMenu]::SailingMenu()).show()"
+            color   = "White"
         }
         $menu.options += $options
 
@@ -425,7 +425,7 @@ class BigFishMenu {
             options  = @()
         }
 
-        $optionKey =1
+        $optionKey = 1
 
         # peche classique
         $capacity = $bf.fisher.net.getCapacity()
@@ -439,7 +439,7 @@ class BigFishMenu {
 
         # peche en profondeur
         $canGoDeep = $bf.fisher.net.canGoDeep()
-        if($canGoDeep) {
+        if ($canGoDeep) {
             $options = @{
                 key     = ($optionKey++).toString()
                 label   = "Pêcher en profondeur (capacité:$($capacity))" + ($canGoDeep ? "" : " - REQUIERT UN OBJET POUR ALLER EN PROFONDEUR")
@@ -458,6 +458,50 @@ class BigFishMenu {
         }
         $menu.options += $options
             
+        $options = @{
+            key     = "R"
+            label   = "Retour"
+            command = "back"
+            color   = "Gray"
+        }
+        $menu.options += $options
+
+        $options = @{
+            key     = "Q"
+            label   = "Quitter le programme"
+            command = "exit"
+            color   = "Gray"
+        }
+        $menu.options += $options
+        return $menu | ConvertTo-Json -Depth 5
+    }
+    static [string] SailingMenu() {
+        $bf = $global:bigFish_instance
+        $menu = @{
+            title    = "~~ BIGFISH - menu de Navigation ~~"
+            subtitle = "Emplacement : $((Get-Location).Path)"
+            color    = "Blue"
+            options  = @()
+        }
+
+        $optionKey = 1
+        $options = @{
+            key     = "B"
+            label   = "Demi-tour"
+            command = @("set-Location ..", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
+            color   = "Gray"
+        }
+        $menu.options += $options
+
+        Get-ChildItem -Directory | ForEach-Object {
+            $options = @{
+                key     = ($optionKey++).toString()
+                label   = "$($_.name)"
+                command = @("set-Location $_", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
+                color   = "DarkGray"
+            }
+            $menu.options += $options
+        }    
         $options = @{
             key     = "R"
             label   = "Retour"
@@ -536,9 +580,10 @@ class BigFish {
     }
 
     [void] Fish([string] $param) {
-        if($param){
+        if ($param) {
             $this.Fisher.FishByCapacity()
-        }else{
+        }
+        else {
             # arg peut être un nombre ou un type de poisson
 
             if ($param -match '^\d+$') {
@@ -575,8 +620,7 @@ class BigFish {
             }
             $this.Renderer.RenderSuccess("Fichiers supprimes !")
         }
-        if ( $this.Fisher.net.net.count -gt 0)
-        {
+        if ( $this.Fisher.net.net.count -gt 0) {
             Write-Host " "
             Write-Host "  Relacher les autre ? (y/n)" -ForegroundColor Yellow -NoNewline
             $confirm = Read-Host " " 

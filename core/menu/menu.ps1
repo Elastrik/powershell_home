@@ -164,6 +164,7 @@ class Menu {
                     $shouldExit = $true
                     return $choice   # quitte le ForEach
                 }
+                Write-Host "commande exec : $cmd" -ForegroundColor Green
             }
 
             if ($shouldExit) { 
