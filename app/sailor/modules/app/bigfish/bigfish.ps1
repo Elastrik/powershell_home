@@ -496,7 +496,7 @@ class BigFishMenu {
             $options = @{
                 key     = ($optionKey++).toString()
                 label   = "$($_.name)"
-                command = @("set-Location $_", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
+                command = @("set-Location '$_'", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
                 color   = "DarkGray"
             }
             $menu.options += $options

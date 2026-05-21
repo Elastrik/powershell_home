@@ -23,22 +23,33 @@ class Menu {
     [string]      $Color
 
 
-    Menu([string] $input) {
-         $resolvedInput = $input
+    Menu([string] $input_data) {
+        $resolvedInput = $input_data
+        $data = $null
 
-        if (-not [System.IO.Path]::IsPathRooted($input)) {
-            $resolvedInput = Join-Path $global:powershell_folder $input
-        }
-
-        if (Test-Path $resolvedInput -PathType Leaf) {
-            $data = Get-Content $resolvedInput | ConvertFrom-Json
-        } else {
+        # Teste d'abord si ça ressemble à du JSON
+        if ($input_data.TrimStart().StartsWith("{")) {
             try {
-                $data = $input | ConvertFrom-Json
-            } catch {
-                throw "L'entrée n'est ni un chemin valide ni du JSON : $_"
+                $data = $input_data | ConvertFrom-Json
+            }
+            catch {
+                throw "JSON invalide : $_"
             }
         }
+        else {
+            # C'est un chemin de fichier
+            if (-not [System.IO.Path]::IsPathRooted($input_data)) {
+                $resolvedInput = Join-Path $global:powershell_folder $input_data
+            }
+
+            if (Test-Path $resolvedInput -PathType Leaf) {
+                $data = Get-Content $resolvedInput | ConvertFrom-Json
+            }
+            else {
+                throw "Fichier introuvable : $resolvedInput"
+            }
+        }
+
         $this.Title = $data.title
         $this.Subtitle = $data.subtitle
         $this.Header = $data.header
@@ -158,13 +169,13 @@ class Menu {
                     return $choice   # quitte le ForEach
                 }
                 # write-host "Exécution de la commande : $cmd" -ForegroundColor Green
-
+                
+                Write-Host "commande exec : $cmd" -ForegroundColor Green
                 $cmdReturn = Invoke-Expression $cmd
                 if ($cmdReturn -eq "Q" -or $cmdReturn -eq "q") {
                     $shouldExit = $true
                     return $choice   # quitte le ForEach
                 }
-                Write-Host "commande exec : $cmd" -ForegroundColor Green
             }
 
             if ($shouldExit) { 
