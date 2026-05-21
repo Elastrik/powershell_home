@@ -67,6 +67,29 @@ function Merchant {
     }
 }
 
+# dock 
+$dock_class = Join-Path $global:sailor_dock_path "dock.ps1"
+write-Host "Loading dock module from $dock_class" -ForegroundColor Cyan
+. $dock_class
+
+function Dock {
+    [SailorDock]::listDocks()
+    if([SailorDock]::isDock((Get-Location).Path)) {
+        Write-Host "Vous vous trouvez dans un port." -ForegroundColor Green
+    }
+}
+function setDock {
+    [SailorDock]::listDocks()
+    if([SailorDock]::isDock((Get-Location).Path)) {
+        Write-Host "Vous vous trouvez dans un port." -ForegroundColor Green
+    
+    }else{
+        $currentPath = (Get-Location).Path
+        [SailorDock]::new($currentPath)
+        Write-Host "Nouveau dock : $currentPath" -ForegroundColor Yellow
+    }
+}
+
 
 
 ### app
