@@ -1,0 +1,87 @@
+Structure du dossier pour le volume Windows 
+Le num�ro de s�rie du volume est 746C-98A5
+C:\USERS\VLEDOUX\ONEDRIVE - SED\HOME\POWERSHELL
++---app
+|   \---sailor
+|       |   app.ps1
+|       |   
+|       +---config
+|       |       alias.ps1
+|       |       functions.ps1
+|       |       variables.ps1
+|       |       
+|       \---modules
+|           +---app
+|           |   \---bigfish
+|           |           bigfish.ps1
+|           |           menu_bigfish_type.json
+|           |           
+|           \---core
+|               +---bag
+|               |       bag.ps1
+|               |       README.md
+|               |       
+|               +---merchant
+|               |       merchant.ps1
+|               |       
+|               \---wallet
+|                       wallet.ps1
+|                       
++---core
+|   +---menu
+|   |   |   core.ps1
+|   |   |   menu.ps1
+|   |   |   
+|   |   \---config
+|   |           variables.ps1
+|   |           
+|   \---profile
+|       |   apploader.ps1
+|       |   
+|       \---common
+|           \---config
+|                   alias.ps1
+|                   functions.ps1
+|                   variables.ps1
+|                   
+\---home
+    |   profile_example.txt
+    |   
+    +---menus
+    |       boulot.json
+    |       machine_boulot.json
+    |       maison.json
+    |       outil_boulot.json
+    |       vscode_boulot.json
+    |       
+    \---profile
+        +---Elastrik
+        |   |   app.txt
+        |   |   core.txt
+        |   |   
+        |   +---config
+        |   |       alias.ps1
+        |   |       functions.ps1
+        |   |       variable.ps1
+        |   |       welcome.ps1
+        |   |       
+        |   \---persistent
+        |           bag.json
+        |           merchant.json
+        |           wallet.json
+        |           
+        \---SED
+            |   app.txt
+            |   core.txt
+            |   
+            +---config
+            |       alias.ps1
+            |       functions.ps1
+            |       variable.ps1
+            |       welcome.ps1
+            |       
+            \---persistent
+                    bag.json
+                    merchant.json
+                    wallet.json
+                    

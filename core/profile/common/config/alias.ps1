@@ -59,5 +59,3 @@ function extract($file) {
         default     { Write-Host "Format non reconnu" }
     }
 }
-
-Set-Alias mm mainmenu

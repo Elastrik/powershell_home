@@ -436,6 +436,15 @@ class BigFishMenu {
             color   = "Yellow"
         }
         $menu.options += $options
+        $options = @{
+            key     = ($optionKey++).toString()
+            label   = "Vider le filet"
+            command = "bigfish net empty"
+            color   = "Gray"
+        }
+        $menu.options += $options
+
+        
 
         # peche en profondeur
         $canGoDeep = $bf.fisher.net.canGoDeep()
@@ -503,9 +512,9 @@ class BigFishMenu {
         }    
         $options = @{
             key     = "R"
-            label   = "Retour"
+            label   = "Travailler ici"
             command = "back"
-            color   = "Gray"
+            color   = "DarkYellow"
         }
         $menu.options += $options
 

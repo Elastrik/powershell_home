@@ -1,43 +1,10 @@
 ## d'abord on load les communs 
 $config = Join-Path $global:PSConfigRoot  "core/profile/common/config"
-write-host "loading common $config" -ForegroundColor Cyan
+# write-host "loading common $config" -ForegroundColor Cyan
 
 if (Test-Path $config) {
 
     $var = Join-Path $config "variables.ps1"
-    if (Test-Path $var) {
-        . $var
-        write-host "loaded $var" -ForegroundColor Cyan
-
-    }
-    $fun = Join-Path $config "functions.ps1"
-    if (Test-Path $fun) {   
-        . $fun
-        write-host "loaded $fun" -ForegroundColor Cyan
-    }
-    $alias = Join-Path $config "alias.ps1"
-    if (Test-Path $alias) {  
-        . $alias
-        write-host "loaded $alias" -ForegroundColor Cyan
-    }
-    $welcome = Join-Path $config "welcome.ps1"
-    if (Test-Path $welcome) {   
-        . $welcome
-        write-host "loaded $welcome" -ForegroundColor Cyan
-    }
-}
-
-# write-host "Loading profile from $global:profile_path" -ForegroundColor Cyan
-
-$config = Join-Path $global:profile_path "config"
-
-# write-host "Loading profile configuration from $config" -ForegroundColor Cyan
-
-if (Test-Path $config) {
-
-
-
-    $var = Join-Path $config "variable.ps1"
     if (Test-Path $var) {
         . $var
         # write-host "loaded $var" -ForegroundColor Cyan
@@ -59,6 +26,7 @@ if (Test-Path $config) {
         # write-host "loaded $welcome" -ForegroundColor Cyan
     }
 }
+
 
 
 $corelist = Join-Path $global:profile_path "core.txt"
@@ -85,5 +53,41 @@ if (Test-Path $applist) {
             . $app_loader
             # write-host "loaded $app_loader" -ForegroundColor Cyan
         }
+    }
+}
+
+# write-host "Loading profile from $global:profile_path" -ForegroundColor Cyan
+
+$config = Join-Path $global:profile_path "config"
+# write-host "Loading profile configuration from $config" -ForegroundColor Cyan
+
+if (Test-Path $config) {
+
+
+
+    $var = Join-Path $config "variable.ps1"
+    if (Test-Path $var) {
+        . $var
+        # write-host "loaded $var" -ForegroundColor Cyan
+
+    }
+    $fun = Join-Path $config "functions.ps1"
+    if (Test-Path $fun) {   
+        . $fun
+        # write-host "loaded $fun" -ForegroundColor Cyan
+    }
+    $alias = Join-Path $config "alias.ps1"
+    if (Test-Path $alias) {  
+        . $alias
+        # write-host "loaded $alias" -ForegroundColor Cyan
+    }
+    $logo = Join-Path $config "logo.ps1"
+    if (Test-Path $logo) {
+        . $logo
+    }
+    $welcome = Join-Path $config "welcome.ps1"
+    if (Test-Path $welcome) {   
+        . $welcome
+        # write-host "loaded $welcome" -ForegroundColor Cyan
     }
 }
