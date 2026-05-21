@@ -28,7 +28,7 @@ class Wallet {
             valeur    = $this.valeur
             Metadata = $this.Metadata
         } | ConvertTo-Json | Set-Content $this.SavePath
-        $global:wallet = $this
+        $global:sailor_wallet = $this
     }
 
     [void] AddValue([long] $amount) {
@@ -81,9 +81,4 @@ class WalletRenderer {
 }
 
 
-$global:wallet = [Wallet]::new((Join-path $global:persistent_home_path "wallet.json"))
-function Wallet() {
-    $wrender = [WalletRenderer]::new()
-    $wrender.RenderWallet($global:wallet)
-}
 

@@ -85,25 +85,6 @@ function Welcome (){
 
 }
 
-function WelcomeSed (){
-    
-    
-    if ($Host.UI.RawUI) {
-        
-        $welcome = [Welcome]::New()
-       
-        $welcome.RenderLogoSed()
-        $welcome.RenderSystemInfo()
-        $welcome.RenderDiskInfo()
-        $welcome.RenderMeteo("moussy-le-vieux")
-        $welcome.RenderMessage("Encore du travail ? ")        
-        $welcome.RenderWallet()
-      
-        # mainmenu
-        
-    }
-
-}
 
 
 function prompt {
@@ -146,4 +127,3 @@ function prompt {
     }
     return " > "
 }
-

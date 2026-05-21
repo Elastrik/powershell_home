@@ -117,7 +117,7 @@ class FishNet {
     }
     [int] getCapacity() {
         $modifiers = 0
-        $global:bag.items | ForEach-Object {
+        $global:sailor_bag.items | ForEach-Object {
             
             if ($_.Metadata["NetCapacity"]) {
                 $modifiers += ([int]$_.Metadata["NetCapacity"] * $_.quantity)
@@ -127,7 +127,7 @@ class FishNet {
     }
     [bool] canGoDeep() {
         $canGoDeep = $false
-        $global:bag.items | ForEach-Object {
+        $global:sailor_bag.items | ForEach-Object {
             if ($_.Metadata["CanGoDeep"] -and $_.Metadata["CanGoDeep"] -eq "true") {
                 $canGoDeep = $true
             }
@@ -157,7 +157,7 @@ class Fisher {
     }
 
     [Fisher] FishByCount([int] $n = 5) {
-        if ($n > $this.net.getCapacity()) {
+        if ($n -gt $this.net.getCapacity()) {
             $n = $this.net.getCapacity()
         }
         Get-ChildItem -File |
@@ -372,7 +372,7 @@ class FishRenderer {
 
 class BigFishMenu {
     static [string] main() {
-        $bf = $global:bigFish_instance
+        $bf = $global:sailor_bigfish_instance
         $menu = @{
             title    = "~~ BIGFISH ~~"
             subtitle = "A la pêche au gros !"
@@ -417,7 +417,7 @@ class BigFishMenu {
     }
 
     static [string] FishingMenu() {
-        $bf = $global:bigFish_instance
+        $bf = $global:sailor_bigfish_instance
         $menu = @{
             title    = "~~ BIGFISH - menu de pêche ~~"
             subtitle = "Emplacement : $((Get-Location).Path)"
@@ -476,7 +476,6 @@ class BigFishMenu {
         return $menu | ConvertTo-Json -Depth 5
     }
     static [string] SailingMenu() {
-        $bf = $global:bigFish_instance
         $menu = @{
             title    = "~~ BIGFISH - menu de Navigation ~~"
             subtitle = "Emplacement : $((Get-Location).Path)"
@@ -558,7 +557,7 @@ class BigFish {
     BigFish() {
         $this.Fisher = [Fisher]::new()
         $this.Renderer = [FishRenderer]::new()
-        $wallet_path = Join-path $global:persistent_home_path 'wallet.json'
+        $wallet_path = Join-path $global:persistent_data 'wallet.json'
         $this.wallet = [FishWallet]::new($wallet_path)
 
     }
@@ -641,16 +640,3 @@ class BigFish {
     }
 
 }
-
-
-
-# fonction associées
-$global:bigFish_instance = $null
-
-function bigfish {
-    if ($global:bigFish_instance -eq $null) {
-        $global:bigFish_instance = [BigFish]::new()
-    }
-    $global:bigFish_instance.Execute($args)
-}
-Set-Alias bf bigfish

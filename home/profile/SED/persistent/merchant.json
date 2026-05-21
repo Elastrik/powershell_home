@@ -1,0 +1,24 @@
+{
+  "ItemsAvailable": [
+    {
+      "name": "Renfort de filet",
+      "description": "Augmente un peu la capacité du filet",
+      "price": 100,
+      "quantity": 195,
+      "Metadata": {
+        "NetCapacity": 1
+      }
+    }
+  ],
+  "ItemsSold": [
+    {
+      "name": "Renfort de filet",
+      "description": "Augmente un peu la capacité du filet",
+      "price": 100,
+      "quantity": 8,
+      "Metadata": {
+        "NetCapacity": 1
+      }
+    }
+  ]
+}

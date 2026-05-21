@@ -1,5 +1,3 @@
-$bag_prf_path = Join-Path $global:persistent_home_path "bag.json"
-$global:bag = [Bag]::New($bag_prf_path)
 
 
 class Item {
@@ -30,8 +28,8 @@ class Item {
     }
     [bool] isAffordable() {
         $account = 0 
-        if($global:wallet.valeur) {
-            $account = $global:wallet.valeur
+        if($global:sailor_wallet.valeur) {
+            $account = $global:sailor_wallet.valeur
         }
         return $account -ge $this.price
     }

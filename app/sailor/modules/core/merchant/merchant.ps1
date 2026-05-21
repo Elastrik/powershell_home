@@ -1,6 +1,3 @@
-$merch_prf_path = Join-Path $global:persistent_home_path "merchant.json"
-$global:Merchant_profile = [Merchant]::New($merch_prf_path)
-
 class MerchantItemRenderer {
     [void] RenderItem([Item] $item) {
         $statusColor = if ($item.IsAvailable()) { "Yellow" } else { "DarkGray" }
@@ -82,7 +79,7 @@ class Merchant {
             ItemsAvailable = $this.itemsAvailable
             ItemsSold      = $this.itemsSold
         } | ConvertTo-Json -Depth 5 | Set-Content $this.SavePath
-        $global:Merchant_profile = $this
+        $global:sailor_merchant = $this
 
     }
 
@@ -174,9 +171,9 @@ class Merchant {
 
     static [void ] MerchantSell ([string] $itemName) {
         
-        $merchant = $global:Merchant_profile
-        $bag = $global:bag
-        $wallet = $global:wallet
+        $merchant = $global:sailor_merchant
+        $bag = $global:sailor_bag
+        $wallet = $global:sailor_wallet
 
         if ($merchant.IsAvailable($itemName)) {
             $merchant.SellItem($itemName, $bag, $wallet)
