@@ -510,9 +510,21 @@ class BigFishMenu {
             }
             $menu.options += $options
         }    
+
+        write-host " is dosck ? $(Get-Location.Path)"
+        if ([DockMap]::isDock(Get-Location.Path)) {
+            $options = @{
+                key     = "P"
+                label   = "Aller au port"
+                command = @("[Menu]::New([DockMenu]::Main()).show()")
+                color   = "Green"
+            }
+            $menu.options += $options
+        }
+
         $options = @{
             key     = "R"
-            label   = "Travailler ici"
+            label   = "Pêcher ici"
             command = "back"
             color   = "DarkYellow"
         }

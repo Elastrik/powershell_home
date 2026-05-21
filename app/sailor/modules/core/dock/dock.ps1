@@ -1,69 +1,59 @@
 
-class SailorDock {
+class DockMap {
+    static [System.Collections.Generic.List[String]]    $dockLocations
+    static [string]                                     $SavePath
 
-    static [System.Collections.Generic.List[System.String]]    $dockLocations
-    static [string]                                            $SavePath
-
-    [string] $location
-
-
-
-    SailorDock([string] $location) {
-        $this.location = $location
-        if ($null -eq [SailorDock]::dockLocations) {
-            [SailorDock]::initLocations()
+    static [void] init() {
+        if (-not [DockMap]::SavePath) {
+            [DockMap]::SavePath = Join-Path $global:persistent_data "docks.json"
         }
-        if ([SailorDock]::dockLocations -notcontains $location) {
-            [SailorDock]::dockLocations.Add($location)
-            [SailorDock]::Save()
-        }
-    }
-
-    static [void] initLocations() {
-        if (-not [SailorDock]::SavePath) {
-            [SailorDock]::SavePath = Join-Path $global:persistent_data "docks.json"
-        }
-        [SailorDock]::dockLocations = [System.Collections.Generic.List[System.String]]::new()
-        if (Test-Path [SailorDock]::SavePath) {
-            $data = Get-Content [SailorDock]::SavePath | ConvertFrom-Json
+        [DockMap]::dockLocations = [System.Collections.Generic.List[String]]::new()
+        if (Test-Path [DockMap]::SavePath) {
+            $data = Get-Content [DockMap]::SavePath | ConvertFrom-Json
             if ($data.DockLocations) {
-                [SailorDock]::dockLocations = [System.Collections.Generic.List[System.String]]::new()
+                [DockMap]::dockLocations = [System.Collections.Generic.List[String]]::new()
                 $data.DockLocations | ForEach-Object {
-                    [SailorDock]::dockLocations.Add($_)
+                    [DockMap]::dockLocations.Add($_)
                 }
             }
         }
     }
 
     static [void] Save() {
-          if (-not [SailorDock]::SavePath) {
-            [SailorDock]::SavePath = Join-Path $global:persistent_data "docks.json"
+        if (-not [DockMap]::SavePath) {
+            [DockMap]::SavePath = Join-Path $global:persistent_data "docks.json"
         }
-        if ($null -eq [SailorDock]::dockLocations) {
-            [SailorDock]::initLocations()
+        if ($null -eq [DockMap]::dockLocations) {
+            [DockMap]::init()
         }
         $data = @{
-            DockLocations = [SailorDock]::dockLocations
-        }
-        $data | ConvertTo-Json -Depth 10 | Set-Content [SailorDock]::SavePath
+            DockLocations = [DockMap]::dockLocations
+        }  | ConvertTo-Json -Depth 10 | Set-Content ([DockMap]::SavePath)
     }
    
     static [void] listDocks() {
-        if ($null -eq [SailorDock]::dockLocations) {
-            [SailorDock]::initLocations()
+        if ($null -eq [DockMap]::dockLocations) {
+            [DockMap]::init()
         }
-        [SailorDock]::dockLocations | ForEach-Object {
+        [DockMap]::dockLocations | ForEach-Object {
             Write-Host $_
         }
     }
-
-    static [bool] isDock([string] $location) {
-        if ($null -eq [SailorDock]::dockLocations) {
-            [SailorDock]::initLocations()
+    static [bool] isDock([string] $path) {
+        write-host 'Checking dock for path: ' $path
+        if ($null -eq [DockMap]::dockLocations) {
+            [DockMap]::init()
         }
-        return [SailorDock]::dockLocations -contains $location
+        return [DockMap]::dockLocations.Contains($path)
     }
-
-
+   static [void] addDock([string] $path) {
+        if ($null -eq [DockMap]::dockLocations) {
+            [DockMap]::init()
+        }
+        if (-not [DockMap]::dockLocations.Contains($path)) {
+            [DockMap]::dockLocations.Add($path)
+            [DockMap]::Save()
+        }
+    }
 
 }
