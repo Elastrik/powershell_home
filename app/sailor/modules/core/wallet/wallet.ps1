@@ -19,7 +19,7 @@ class Wallet {
                  }
             }
         } else {
-            $this.valeur = 0
+            $this.valeur = 1000
         }
     }
 
