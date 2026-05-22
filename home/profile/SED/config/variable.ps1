@@ -6,7 +6,7 @@ $global:soft = Resolve-path( Join-Path $global:PSConfigRoot "..\Soft")        # 
 $global:down = Resolve-path( Join-Path $global:PSConfigRoot "..\..\..\Downloads")  
 
 
-$global:main_menu = Join-path $global:powershell_home 'menus\boulot.json'
+# $global:main_menu = Join-path $global:powershell_home 'menus\boulot.json'
 
 $global:welcome_message = "Encore du travail ?"
 $global:welcome_location = "moussy-le-vieux"

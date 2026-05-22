@@ -26,6 +26,7 @@ class Menu {
     Menu([string] $input_data) {
         $resolvedInput = $input_data
         $data = $null
+        
 
         # Teste d'abord si ça ressemble à du JSON
         if ($input_data.TrimStart().StartsWith("{")) {
@@ -163,11 +164,15 @@ class Menu {
             
             $selected.Command | ForEach-Object {
                 $cmd = $_
-
+      
                 if ($cmd -eq "exit" -or $cmd -eq "back") {
                     $shouldExit = $true
+                    write-host "Returning $choice" -ForegroundColor Green
+
                     return $choice   # quitte le ForEach
                 }
+
+      
                 # write-host "Exécution de la commande : $cmd" -ForegroundColor Green
                 
                 Write-Host "commande exec : $cmd" -ForegroundColor Green
@@ -178,10 +183,9 @@ class Menu {
                 }
             }
 
-            if ($shouldExit) { 
-                return $choice  
+             if ($shouldExit) { 
+                    return $choice
             }
-
      
         }
 

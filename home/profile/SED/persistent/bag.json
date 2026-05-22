@@ -1,18 +1,72 @@
 {
+  "stats": {
+    "totalAcquired": 7,
+    "lastModified": "2026-05-22T12:44:39.8788520Z"
+  },
+  "maxCapacity": 0,
   "items": [
     {
       "name": "Renfort de filet",
       "description": "Augmente un peu la capacité du filet",
-      "price": 100,
-      "quantity": 4,
+      "price": 10,
+      "quantity": 12,
       "Metadata": {
         "NetCapacity": 1
       }
+    },
+    {
+      "name": "Treuil des profondeurs",
+      "description": "Permet de pêcher dans les sous dossiers",
+      "price": 2000,
+      "quantity": 1,
+      "Metadata": {
+        "CanGoDeep": true
+      }
+    },
+    {
+      "name": "Petit Quai",
+      "description": "Permet d'établir un port'",
+      "price": 5000,
+      "quantity": 1,
+      "Metadata": {
+        "CanSetDock": true
+      }
+    },
+    {
+      "name": "Carte",
+      "description": "Liste les ports connus",
+      "price": 50,
+      "quantity": 1,
+      "Metadata": {
+        "CanShowMap": true
+      }
+    },
+    {
+      "name": "Selecteur de poisson",
+      "description": "Permet de pêcher seulement certains types de poisson",
+      "price": 500,
+      "quantity": 1,
+      "Metadata": {
+        "CanFishByType": true
+      }
+    },
+    {
+      "name": "Detecteur de poisson",
+      "description": "Détecte la présence de poisson",
+      "price": 100,
+      "quantity": 1,
+      "Metadata": {
+        "CanScan": true
+      }
+    },
+    {
+      "name": "Scanneur de profondeur",
+      "description": "Détecte la présence de poisson dans les profondeurs",
+      "price": 1000,
+      "quantity": 1,
+      "Metadata": {
+        "CanDeepScan": true
+      }
     }
-  ],
-  "maxCapacity": 0,
-  "stats": {
-    "lastModified": "2026-05-20T10:50:15.9079693Z",
-    "totalAcquired": 2
-  }
+  ]
 }

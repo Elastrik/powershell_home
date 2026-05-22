@@ -5,7 +5,7 @@ $global:sailor_modules  = Join-Path $global:sailor_path "modules"
 $global:sailor_wallet_path     = Join-Path $global:sailor_modules "core/wallet"
 $global:sailor_merchant_path   = Join-Path $global:sailor_modules "core/merchant"
 $global:sailor_bag_path        = Join-Path $global:sailor_modules "core/bag"
-$global:sailor_dock_path       = Join-Path $global:sailor_modules "core/dock"
+$global:sailor_dock_path       = Join-Path $global:sailor_modules "core/dockMap"
 
 
 #app

@@ -48,11 +48,23 @@ $merchant_class = Join-Path $global:sailor_merchant_path "merchant.ps1"
 
 $global:sailor_merchant = $null
 function Merchant {
+    if ($null -eq $global:sailor_wallet) {
+        $wallet_prf_path = Join-Path $global:persistent_data "wallet.json"
+        $global:sailor_wallet = [Wallet]::New($wallet_prf_path)
+    }
+    if ($null -eq $global:sailor_bag) {
+        $bag_prf_path = Join-Path $global:persistent_data "bag.json"
+        $global:sailor_bag = [Bag]::New($bag_prf_path)
+    
+    }
+
     if ($null -eq $global:sailor_merchant) {
         $merch_prf_path = Join-Path $global:persistent_data "merchant.json"
+
         $global:sailor_merchant = [Merchant]::New($merch_prf_path)
     }
-    $merchant = $global:sailor_merchant_profile
+  
+    $merchant = $global:sailor_merchant
     if ($merchant.itemsAvailable.Count -eq 0) {
         Write-Host "Le marchand n'a rien à vendre pour le moment." -ForegroundColor Gray
         return
@@ -60,7 +72,7 @@ function Merchant {
     $menuData = $merchant.GetJsonMenu()
     $menu = [Menu]::new($menuData)
     $choice = $menu.Show()
-    while ($choice -ne "Q") {
+    while ($choice -ne "Q" -and $choice -ne "q" -and $choice -and "R" -and $choice -ne "r") {
         $menuData = $merchant.GetJsonMenu()
         $menu = [Menu]::new($menuData)
         $choice = $menu.Show()
@@ -68,23 +80,20 @@ function Merchant {
 }
 
 # dock 
-$dock_class = Join-Path $global:sailor_dock_path "dock.ps1"
-write-Host "Loading dock module from $dock_class" -ForegroundColor Cyan
+$dock_class = Join-Path $global:sailor_dock_path "dockMap.ps1"
 . $dock_class
 
 function Dock {
-    [DockMap]::listDocks()
-    if([DockMap]::isDock((Get-Location).Path)) {
-        Write-Host "Vous vous trouvez dans un port." -ForegroundColor Green
-    }
+    [DockMapRenderer]::RenderDockMap()
 }
+
 function setDock {
-    [DockMap]::listDocks()
   
-    if([DockMap]::isDock((Get-Location).Path)) {
-        Write-Host "Vous vous trouvez dans un port." -ForegroundColor Green
+    if ([DockMap]::isDock((Get-Location).Path)) {
+        Write-Host "Il y a deja un port ici" -ForegroundColor Red
     
-    }else{
+    }
+    else {
         $currentPath = (Get-Location).Path
         [DockMap]::addDock($currentPath) 
         Write-Host "Nouveau dock : $currentPath" -ForegroundColor Yellow
@@ -105,10 +114,13 @@ function bigfish {
         $bag_prf_path = Join-Path $global:persistent_data "bag.json"
         $global:sailor_bag = [Bag]::New($bag_prf_path)
     }
+     
     if ($null -eq $global:sailor_merchant) {
         $merch_prf_path = Join-Path $global:persistent_data "merchant.json"
         $global:sailor_merchant = [Merchant]::New($merch_prf_path)
     }
+   
+
     if ($null -eq $global:sailor_wallet) {
         $wallet_prf_path = Join-Path $global:persistent_data "wallet.json"
         $global:sailor_wallet = [Wallet]::New($wallet_prf_path)

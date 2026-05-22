@@ -81,8 +81,6 @@ class FishNet {
 
     [FishNet] AddFish([FishFile] $fish) {
         $this.net.Add($fish)
-        $this.net.GetEnumerator() | ForEach-Object {
-        }
         return $this
     }
     [Fishnet] Sell([fishWallet] $wallet) {
@@ -134,6 +132,52 @@ class FishNet {
         }
         return $canGoDeep
     }
+    [bool] canFishByType() {
+        $canFishByType = $false
+        $global:sailor_bag.items | ForEach-Object {
+            if ($_.Metadata["CanFishByType"] -and $_.Metadata["CanFishByType"] -eq "true") {
+                $canFishByType = $true
+            }
+        }
+        return $canFishByType
+    }
+    [bool] CanDeepScan() {
+        $CanDeepScan = $false
+        $global:sailor_bag.items | ForEach-Object {
+            if ($_.Metadata["CanDeepScan"] -and $_.Metadata["CanDeepScan"] -eq "true") {
+                $CanDeepScan = $true
+            }
+        }
+        return $CanDeepScan
+    }
+    [bool] CanScan() {
+        $CanScan = $false
+        $global:sailor_bag.items | ForEach-Object {
+            if ($_.Metadata["CanScan"] -and $_.Metadata["CanScan"] -eq "true") {
+                $CanScan = $true
+            }
+        }
+        return $CanScan
+    }
+    [bool] CanSetDock() {
+        $CanSetDock = $false
+        $global:sailor_bag.items | ForEach-Object {
+            if ($_.Metadata["CanSetDock"] -and $_.Metadata["CanSetDock"] -eq "true") {
+                $CanSetDock = $true
+            }
+        }
+        return $CanSetDock
+    }
+    [bool] CanShowMap() {
+        $canShowMap = $false
+        $global:sailor_bag.items | ForEach-Object {
+            if ($_.Metadata["CanShowMap"] -and $_.Metadata["CanShowMap"] -eq "true") {
+                $canShowMap = $true
+            }
+        }
+        return $canShowMap
+    }
+
 
 }
 # Le pecheur
@@ -143,12 +187,12 @@ class Fisher {
     Fisher() {
         $this.net = [Fishnet]::New()
     }
-    [Fisher] FishByCapacity() {
+    [Fisher] Fish() {
         $capacity = $this.net.getCapacity()
-        Get-ChildItem -File |
-        Sort-Object Length -Descending |
-        Select-Object -First $capacity |
-        ForEach-Object {
+        Get-ChildItem -File 
+        | Sort-Object Length -Descending 
+        | Select-Object -First $capacity 
+        | ForEach-Object {
             $fish = [FishFile]::new($_)
             $this.net.AddFish($fish)
 
@@ -156,59 +200,47 @@ class Fisher {
         return $this
     }
 
-    [Fisher] FishByCount([int] $n = 5) {
-        if ($n -gt $this.net.getCapacity()) {
-            $n = $this.net.getCapacity()
-        }
-        Get-ChildItem -File |
-        Sort-Object Length -Descending |
-        Select-Object -First $n |
-        ForEach-Object {
-            $fish = [FishFile]::new($_)
-            $this.net.AddFish($fish)
-
-        }
-        return $this
-    }
     [Fisher] FishByType([string] $typename) {
         $n = $this.net.getCapacity()
         Get-ChildItem -File | Where-Object { 
             $fish = [FishFile]::new($_)
             $fish.fishType.name -eq $typename
-        } |
-        Sort-Object Length -Descending | Select-Object -First $n |
-        ForEach-Object {
+        } 
+        | Sort-Object Length -Descending 
+        | Select-Object -First $n 
+        | ForEach-Object {
             $fish = [FishFile]::new($_)
             $this.net.AddFish($fish)
 
         }
         return $this
     }
-    [Fisher] DeepFishByCount([int] $count = 5) {
-        if ($count -gt $this.net.getCapacity()) {
-            $count = $this.net.getCapacity()
-        }
-        Get-ChildItem -Recurse -File |
-        Sort-Object Length -Descending |
-        Select-Object -First $count |
-        ForEach-Object {
+    [Fisher] DeepFish() {
+        $count = $this.net.getCapacity()
+        Get-ChildItem -Recurse -File 
+        | Sort-Object Length -Descending 
+        | Select-Object -First $count 
+        | ForEach-Object {
             $fish = [FishFile]::new($_)
             $this.net.AddFish($fish)
         }
         return $this
     }
     [Fisher] DeepFishByType([string] $typename) {
-        Get-ChildItem -File -Recurse | Where-Object { 
+        Get-ChildItem -File -Recurse 
+        | Where-Object { 
             $fish = [FishFile]::new($_)
             $fish.fishType.name -eq $typename
-        } |
-        Sort-Object Length -Descending | Select-Object - First $this.net.getCapacity()
-        ForEach-Object {
+        } 
+        | Sort-Object Length -Descending 
+        | Select-Object -First $this.net.getCapacity() 
+        | ForEach-Object {
             $fish = [FishFile]::new($_)
             $this.net.AddFish($fish)
         }
         return $this
     }
+
 
 
     [Fisher] Sell([fishWallet] $wallet) {
@@ -218,6 +250,34 @@ class Fisher {
     [Fisher] SellByType([string] $typename, [FishWallet] $wallet) {
         $this.net.SellByType($typename, $wallet)
         return $this
+    }
+    [System.Collections.Generic.List[FishFile]] Scan() {
+        $result = [System.Collections.Generic.List[FishFile]]::new()
+        
+
+        Get-ChildItem -File 
+        | Sort-Object Length -Descending 
+        | ForEach-Object {
+            $fish = [FishFile]::new($_)
+            $result.add($fish)
+
+        }
+        Write-host "Scan made " -ForegroundColor Green
+        return $result 
+    }
+    [System.Collections.Generic.List[FishFile]] DeepScan() {
+        $result = [System.Collections.Generic.List[FishFile]]::new()
+        
+
+        Get-ChildItem -File -Recurse 
+        | Sort-Object DirectoryName -Descending 
+        | ForEach-Object {
+            $fish = [FishFile]::new($_)
+            $result.add($fish)
+
+        }
+        Write-host "Scan made " -ForegroundColor Green
+        return $result 
     }
 
 }
@@ -258,6 +318,7 @@ class FishRenderer {
     # surcharge pour le mode par défaut
     [void] RenderNet([BigFish] $bf) {
         $this.RenderNet($bf, $false, $null)
+        Read-Host "[Entrée pour continuer]"
     }
 
     [void] RenderFish([FishFile] $fish) {
@@ -269,7 +330,7 @@ class FishRenderer {
 
         Write-Host "~>$($fishLabel.padRight(12,'~')) " -ForegroundColor $color -NoNewline
         Write-Host "$($fish.file.Name.PadRight($padding,$filler))" -ForegroundColor $color -NoNewline
-        Write-Host " — $($fish.displaySize) -$($fish.valeur)€" -ForegroundColor $color 
+        Write-Host " — $($fish.displaySize) -$($fish.valeur)$($global:sailor_wallet.devise)" -ForegroundColor $color 
     }
     [void] RenderWallet([BigFish] $bf) {
         $wr = [WalletRenderer]::new()
@@ -296,6 +357,65 @@ class FishRenderer {
       
      
     }
+    [void] RenderScan([System.Collections.Generic.List[FishFile]] $scan, [BigFish] $bf) {
+        
+        $this.RenderHeader($bf)
+        
+        Write-Host ""
+        Write-Host "~ Résultat du scan  ~" -ForegroundColor Yellow
+        
+        $count = 0
+        $savedLocation = ""
+        $value = 0
+        $length = 0
+        foreach ($fish in $scan) {
+            $count++
+            $location = $fish.file.DirectoryName
+            $value += $fish.valeur
+            $length += $fish.file.length
+
+            if ($location -ne $savedLocation) {
+                if ($savedLocation -ne "") {
+                    $unit = 'Go'
+                    $size = [math]::Round($length / 1GB, 2)
+                    if ($size -lt 1) { 
+                        $unit = 'Mo'
+                        $size = [math]::Round($length / 1MB, 2)
+                        if ($size -lt 1) { 
+                            $unit = 'Ko'
+                            $size = [math]::Round($length / 1KB, 2)
+                        } 
+                    }
+                    $displaysize = "$size" + $unit
+                    Write-Host "Valeur totale : $($value) $($global:sailor_wallet.devise) ($($displaysize)) "  -ForegroundColor DarkRed
+                }
+
+                Write-Host ""
+                Write-Host "Emplacement : [$($location)] " -ForegroundColor Magenta
+            }
+
+            $this.RenderFish($fish)
+            $savedLocation = $location
+        }
+        # dernier enreg
+        $unit = 'Go'
+        $size = [math]::Round($length / 1GB, 2)
+        if ($size -lt 1) { 
+            $unit = 'Mo'
+            $size = [math]::Round($length / 1MB, 2)
+            if ($size -lt 1) { 
+                $unit = 'Ko'
+                $size = [math]::Round($length / 1KB, 2)
+            } 
+        }
+        $displaysize = "$size" + $unit
+        Write-Host "Valeur totale : $($value) $($global:sailor_wallet.devise) ($($displaysize)) "  -ForegroundColor DarkRed
+                    
+        Write-Host "~ Total : $count poissons  ~" -ForegroundColor Yellow
+        Read-Host "[Entrée pour continuer]"        
+
+    }
+
 
     [void] RenderFooter() {
         Write-Host ""
@@ -372,7 +492,7 @@ class FishRenderer {
 
 class BigFishMenu {
     static [string] main() {
-        $bf = $global:sailor_bigfish_instance
+        # $bf = $global:sailor_bigfish_instance
         $menu = @{
             title    = "~~ BIGFISH ~~"
             subtitle = "A la pêche au gros !"
@@ -432,19 +552,11 @@ class BigFishMenu {
         $options = @{
             key     = ($optionKey++).toString()
             label   = "Remplir le filet (capacité:$($capacity))"
-            command = "bigfish fish $($capacity)"
+            command = "bigfish fish"
             color   = "Yellow"
         }
         $menu.options += $options
-        $options = @{
-            key     = ($optionKey++).toString()
-            label   = "Vider le filet"
-            command = "bigfish net empty"
-            color   = "Gray"
-        }
-        $menu.options += $options
 
-        
 
         # peche en profondeur
         $canGoDeep = $bf.fisher.net.canGoDeep()
@@ -452,8 +564,38 @@ class BigFishMenu {
             $options = @{
                 key     = ($optionKey++).toString()
                 label   = "Pêcher en profondeur (capacité:$($capacity))" + ($canGoDeep ? "" : " - REQUIERT UN OBJET POUR ALLER EN PROFONDEUR")
-                command = "bigfish deepfish $($capacity)"
+                command = "bigfish deepfish"
                 color   = "DarkYellow"
+            }
+            $menu.options += $options
+        }
+        $canFishByType = $bf.Fisher.net.canFishByType()
+        if ($canFishByType) {
+            $options = @{
+                key     = ($optionKey++).toString()
+                label   = "Pêcher par type de poisson" 
+                command = "[Menu]::New([BigFishMenu]::FishByTypeMenu()).show()"
+                color   = "yellow"
+            }
+            $menu.options += $options
+        }
+        $canScan = $bf.Fisher.net.canScan()
+        if ($canScan) {
+            $options = @{
+                key     = ($optionKey++).toString()
+                label   = "Scanner cet enmplacement" 
+                command = "bigfish scan"
+                color   = "yellow"
+            }
+            $menu.options += $options
+        }
+        $canDeepScan = $bf.Fisher.net.canDeepScan()
+        if ($canDeepScan) {
+            $options = @{
+                key     = ($optionKey++).toString()
+                label   = "Scanner en profondeur" 
+                command = "bigfish deepscan"
+                color   = "Darkyellow"
             }
             $menu.options += $options
         }
@@ -466,7 +608,17 @@ class BigFishMenu {
             color   = "Cyan"
         }
         $menu.options += $options
-            
+
+        $options = @{
+            key     = "V"
+            label   = "Vider le filet"
+            command = "bigfish net empty"
+            color   = "Gray"
+        }
+        $menu.options += $options
+
+        
+        
         $options = @{
             key     = "R"
             label   = "Retour"
@@ -484,6 +636,52 @@ class BigFishMenu {
         $menu.options += $options
         return $menu | ConvertTo-Json -Depth 5
     }
+
+    static [string] FishByTypeMenu() {
+        $menu = @{
+            title    = "~~ BIGFISH - Peche par type ~~"
+            subtitle = "Emplacement : $((Get-Location).Path)"
+            color    = "DarkBlue"
+            options  = @()
+        }
+
+        $optionKey = 1
+
+        [FishType]::fishSize.GetEnumerator() |
+        Sort-Object { $_.Value } |
+        ForEach-Object {
+           
+            $options = @{
+
+                key     = ($optionKey++).toString()
+                label   = "$($_.key)"
+                command = "bigfish fish $($_.key)"
+                color   = "$([FishType]::fishColor[$_.key])"
+
+            }
+            $menu.options += $options
+
+        }
+
+        $options = @{
+            key     = "R"
+            label   = "Retour"
+            command = "back"
+            color   = "DarkYellow"
+        }
+        $menu.options += $options
+
+        $options = @{
+            key     = "Q"
+            label   = "Quitter le programme"
+            command = "exit"
+            color   = "Gray"
+        }
+        $menu.options += $options
+        return $menu | ConvertTo-Json -Depth 5
+    }
+
+
     static [string] SailingMenu() {
         $menu = @{
             title    = "~~ BIGFISH - menu de Navigation ~~"
@@ -492,27 +690,50 @@ class BigFishMenu {
             options  = @()
         }
 
+        if ($global:sailor_bigfish_instance.Fisher.Net.CanShowMap()) {
+            $options = @{
+                key     = "M"
+                label   = "Afficher la carte"
+                command = "dock"
+                color   = "DarkYellow"
+            }
+            $menu.options += $options
+        }
+
         $optionKey = 1
         $options = @{
             key     = "B"
-            label   = "Demi-tour"
+            label   = "Demi-tour (..)"
             command = @("set-Location ..", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
-            color   = "Gray"
+            color   = "Blue"
         }
         $menu.options += $options
 
         Get-ChildItem -Directory | ForEach-Object {
+            $location = $_.FullName
+            if ([DockMap]::isDock($location)) {
+                $label = "$($_.Name) [PORT]"
+                $color = "Green"
+            }
+            else {
+                $label = $_.Name
+                $color = "Blue"
+            }
             $options = @{
                 key     = ($optionKey++).toString()
-                label   = "$($_.name)"
+                label   = $label
                 command = @("set-Location '$_'", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
-                color   = "DarkGray"
+                color   = $color
             }
             $menu.options += $options
         }    
+        
+      
 
-        write-host " is dosck ? $(Get-Location.Path)"
-        if ([DockMap]::isDock(Get-Location.Path)) {
+        # write-host " is dock ? $((Get-Location).Path)"
+        $location = "$((Get-Location).Path)"
+        $isDock = ([DockMap]::isDock($location) )
+        if ($isDock) {
             $options = @{
                 key     = "P"
                 label   = "Aller au port"
@@ -521,10 +742,21 @@ class BigFishMenu {
             }
             $menu.options += $options
         }
+        else {
+            if ($global:sailor_bigfish_instance.Fisher.Net.CanSetDock()) {
+                $options = @{
+                    key     = "S"
+                    label   = "Poser un quai d'appoint"
+                    command = @("setdock", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
+                    color   = "DarkGreen"
+                }
+                $menu.options += $options
+            }
+        }
 
         $options = @{
             key     = "R"
-            label   = "Pêcher ici"
+            label   = "Poser l'ancre"
             command = "back"
             color   = "DarkYellow"
         }
@@ -588,6 +820,8 @@ class BigFish {
             "fish" { $this.Fish($cmd[1]) }
             "deepfish" { $this.DeepFish($cmd[1]) }
             "sell" { $this.Sell($cmd[1]) }
+            "scan" { $this.Scan($cmd[1]) }
+            "deepscan" { $this.DeepScan($cmd[1]) }
             "net" { $this.Net($cmd[1]) }
             "help" { $this.Renderer.RenderHelp($this) }
             default { 
@@ -600,14 +834,15 @@ class BigFish {
     }
 
     [void] Fish([string] $param) {
-        if ($param) {
-            $this.Fisher.FishByCapacity()
+        if (-not $param) {
+            write-host "Fisher.fish()" 
+            $this.Fisher.Fish()
         }
         else {
             # arg peut être un nombre ou un type de poisson
 
             if ($param -match '^\d+$') {
-                $this.Fisher.FishByCount([int]$param)
+                # $this.Fisher.FishByCount([int]$param)
             }
             else {
                 $this.Fisher.FishByType($param)
@@ -618,12 +853,19 @@ class BigFish {
     [void] DeepFish([string] $param) {
         # arg peut être un nombre ou un type de poisson
         if ($param -match '^\d+$') {
-            $this.Fisher.DeepFishByCount([int]$param).net
+            $this.Fisher.DeepFish()
         }
         else {
-            $this.Fisher.DeepFishByType($param).net
+            $this.Fisher.DeepFishByType($param)
         }
         $this.Renderer.RenderNet($this)
+    }
+    [void] Scan([string] $param) {
+        $this.Renderer.RenderScan($this.Fisher.Scan(), $this)
+    }
+
+    [void] DeepScan([string] $param) {
+        $this.Renderer.RenderScan($this.Fisher.DeepScan(), $this)
     }
 
     [void] Sell([string] $param) {
