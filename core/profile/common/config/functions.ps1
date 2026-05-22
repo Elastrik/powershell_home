@@ -50,11 +50,6 @@ function diskbar {
 }
 
 
-function mainmenu {
-    
-    $mm = [Menu]::New($global:main_menu)
-    $mm.show()
-}
 
 function ShowColors() {
     $colors = [enum]::GetValues([System.ConsoleColor])
@@ -65,4 +60,58 @@ function ShowColors() {
 }
 
 
+function New-Profile {
+    $name = Read-Host "Nom du profil à céer"
+    
+    if ([string]::IsNullOrEmpty($name)) {
+        Write-Host "Nom invalide." -ForegroundColor Red
+        return
+    }
+
+    $base = Join-Path $global:powershell_folder "home/profile/$($name)"
+
+    if (Test-Path $base) {
+        Write-Host "Le profil '$name' existe déjà." -ForegroundColor Red
+        return
+    }
+
+    # Arborescence
+    $folders = @(
+        $base,
+        (Join-Path $base "config"),
+        (Join-Path $base "persistent")
+    )
+
+    $files = @(
+        (Join-Path $base "app.txt"),
+        (Join-Path $base "core.txt"),
+        (Join-Path $base "config\alias.ps1"),
+        (Join-Path $base "config\functions.ps1"),
+        (Join-Path $base "config\logo.ps1"),
+        (Join-Path $base "config\main.menu.json"),
+        (Join-Path $base "config\variable.ps1"),
+        (Join-Path $base "config\welcome.ps1")
+    )
+
+    # Création des dossiers
+    $folders | ForEach-Object { New-Item -ItemType Directory -Path $_ | Out-Null }
+
+    # Création des fichiers
+    $files | ForEach-Object { New-Item -ItemType File -Path $_ | Out-Null }
+
+    # Contenu de base pour main.menu.json
+    Set-Content (Join-Path $base "config\main.menu.json") ((@{
+        title    = "~~ $name ~~"
+        subtitle = "Que souhaitez-vous faire ?"
+        color    = "White"
+        options  = @(
+            @{ key = "Q"; label = "Quitter"; command = "exit"; color = "Gray" }
+        )
+    }) | ConvertTo-Json -Depth 5)
+
+    Write-Host ""
+    Write-Host "  Profil '$name' créé !" -ForegroundColor Green
+    Write-Host "  $base"                 -ForegroundColor DarkGray
+    Write-Host ""
+}
 # Ouvre Microsoft Outlook (application de bureau)

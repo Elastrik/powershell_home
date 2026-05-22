@@ -1,20 +1,5 @@
 
 
-function Welcome(){
-    if ($Host.UI.RawUI) {
-        [Welcome]::RenderLogo()
-        [Welcome]::RenderSystemInfo()
-        [Welcome]::RenderDiskInfo()
-        if($global:welcome_location){
-            [Welcome]::RenderMeteo($global:welcome_location)
-        }
-        if($global:welcome_message){
-             [Welcome]::RenderMessage($global:welcome_message)        
-        }
-    }
-}
-
-
 function prompt {
     $time = Get-Date -Format "HH:mm:ss"
     $path = (Get-Location).Path  # ajoute .Path pour avoir une vraie string

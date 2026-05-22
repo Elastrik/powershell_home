@@ -1,87 +1,122 @@
 Structure du dossier pour le volume Windows 
-Le num�ro de s�rie du volume est 746C-98A5
-C:\USERS\VLEDOUX\ONEDRIVE - SED\HOME\POWERSHELL
-+---app
+Le num�ro de s�rie du volume est 000000D6 746C:98A5
+C:.
+|   .gitattributes
+|   .gitignore
+|   architechture.txt
+|   
++---.vscode
+|       settings.json
+|       
++---app // Repertoire pour les applis installées
 |   \---sailor
-|       |   app.ps1
+|       |   app.ps1 // Load les fichiers qui sont dans config (appelé par apploader)
 |       |   
 |       +---config
 |       |       alias.ps1
-|       |       functions.ps1
+|       |       functions.ps1 // Load les classes qui sont dans module eventuellement
 |       |       variables.ps1
 |       |       
 |       \---modules
-|           +---app
+|           +---app // sous application
 |           |   \---bigfish
 |           |           bigfish.ps1
 |           |           menu_bigfish_type.json
 |           |           
-|           \---core
+|           \---core // Le coeur sur lequel s'appuie les sous-application
 |               +---bag
 |               |       bag.ps1
 |               |       README.md
 |               |       
+|               +---dockMap
+|               |       dockMap.ps1
+|               |       
 |               +---merchant
+|               |       merchant.json
 |               |       merchant.ps1
 |               |       
 |               \---wallet
 |                       wallet.ps1
 |                       
-+---core
-|   +---menu
++---core // Le coeur du fonctionnement de mon environnement
+|   +---menu // La gestion des menus
 |   |   |   core.ps1
 |   |   |   menu.ps1
 |   |   |   
-|   |   \---config
+|   |   \---config // Les alias, variables et fonctions associées aux menu
+|   |           alias.ps1
+|   |           functions.ps1
 |   |           variables.ps1
 |   |           
-|   \---profile
-|       |   apploader.ps1
+|   +---profile
+|   |   |   apploader.ps1 // Lit le contenu de app et core dans le profile à charger
+|   |   |   
+|   |   \---common // Variables, fonctions et alias communs a tous les profiles
+|   |       \---config
+|   |               alias.ps1
+|   |               functions.ps1
+|   |               variables.ps1
+|   |               
+|   \---welcome // Gestion de l'écran d'accueil
+|       |   core.ps1
+|       |   welcome.ps1
 |       |   
-|       \---common
-|           \---config
-|                   alias.ps1
-|                   functions.ps1
-|                   variables.ps1
-|                   
-\---home
+|       \---config
+\---home // repertoire home, ou l'on arrive en général en ouvrant le terminal
     |   profile_example.txt
     |   
-    +---menus
-    |       boulot.json
+    +---menus 
     |       machine_boulot.json
-    |       maison.json
     |       outil_boulot.json
     |       vscode_boulot.json
     |       
-    \---profile
+    \---profile // profils de terminal disponibles
         +---Elastrik
+        |   |   app.txt // Liste des app a charger (lu par apploader)
+        |   |   core.txt // Liste des core a charger (lu par apploader)
+        |   |   
+        |   +---config // alias, function, variables propres au profil egalement le menu principal
+        |   |       alias.ps1
+        |   |       functions.ps1
+        |   |       logo.ps1
+        |   |       main.menu.json
+        |   |       variable.ps1
+        |   |       welcome.ps1
+        |   |       
+        |   \---persistent // données sauvegardées par les applications
+        |           bag.json
+        |           docks.json
+        |           merchant.json
+        |           wallet.json
+        |           
+        +---Prod // un autre profil
         |   |   app.txt
         |   |   core.txt
         |   |   
         |   +---config
         |   |       alias.ps1
         |   |       functions.ps1
+        |   |       logo.ps1
+        |   |       main.menu.json
         |   |       variable.ps1
         |   |       welcome.ps1
         |   |       
         |   \---persistent
-        |           bag.json
-        |           merchant.json
-        |           wallet.json
-        |           
-        \---SED
+        \---SED // un autre profil
             |   app.txt
             |   core.txt
             |   
             +---config
             |       alias.ps1
             |       functions.ps1
+            |       logo.ps1
+            |       main.menu.json
             |       variable.ps1
             |       welcome.ps1
             |       
             \---persistent
                     bag.json
+                    docks.json
                     merchant.json
                     wallet.json
                     

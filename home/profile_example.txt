@@ -1,14 +1,3 @@
-# Aliases
 
-$global:PSConfigRoot = "C:\Users\vledoux\OneDrive - SED\home\powershell" 
-$global:profile_name = "SED"
-$global:profile_path = Join-Path $global:PSConfigRoot "/home/profile/$($global:profile_name)"
-
-$apploader = Join-path $global:PSConfigRoot "core\profile\apploader.ps1"
-. $apploader
-
-
-Set-Location $global:default_location
-
-welcome
-
+. "C:\Users\vledoux\OneDrive - SED\home\powershell_prod\launcher.ps1" -ProfileName "VLEPROD"
+#. "C:\Users\vledoux\OneDrive - SED\home\powershell\launcher.ps1" -ProfileName "SED"
