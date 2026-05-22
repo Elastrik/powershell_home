@@ -1,3 +1,6 @@
-
+# Ici c'est pour dire quel profil on veut loader
+# pour crééer le profile il faut lancer le install.ps1 a la racine du dossier
+ 
 . "C:\Users\vledoux\OneDrive - SED\home\powershell_prod\launcher.ps1" -ProfileName "VLEPROD"
-#. "C:\Users\vledoux\OneDrive - SED\home\powershell\launcher.ps1" -ProfileName "SED".
+# . "C:\Users\vledoux\OneDrive - SED\home\powershell\launcher.ps1" -ProfileName "SED".
+# . "E:\powershell\launcher.ps1" -ProfileName "Elastrik".

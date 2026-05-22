@@ -1,0 +1,13 @@
+{
+  "options": [
+    {
+      "command": "exit",
+      "label": "Quitter",
+      "color": "Gray",
+      "key": "Q"
+    }
+  ],
+  "subtitle": "Que souhaitez-vous faire ?",
+  "color": "Cyan",
+  "title": "~~ VSCODE ~~"
+}

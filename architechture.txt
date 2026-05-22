@@ -1,12 +1,5 @@
-Structure du dossier pour le volume Windows 
-Le num�ro de s�rie du volume est 000000D6 746C:98A5
-C:.
-|   .gitattributes
-|   .gitignore
+Racine
 |   architechture.txt
-|   
-+---.vscode
-|       settings.json
 |       
 +---app // Repertoire pour les applis installées
 |   \---sailor
