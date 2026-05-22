@@ -95,28 +95,67 @@ class Merchant {
     [void] DecrementQuantity([string] $itemName) {
         $item = $this.itemsAvailable | Where-Object { $_.name -eq $itemName }
 
+        # debug
+        # write-host "Decrement quantity : $($itemName)" -foregroundColor Yellow
+        
         if ($item) {
         
+            # debug
+            # write-host "Decrement quantity - item exist qty - : $($item.quantity)" -foregroundColor Yellow
+        
             $item.quantity = [Math]::Max(0, $item.quantity - 1)
-            if($item.quantity -eq 0){
+            # debug
+            # write-host "Decrement quantity - threasholmd - : $($item.quantity)" -foregroundColor Yellow
+        
+            if ($item.quantity -eq 0) {
+                # debug
+                # write-host "Decrement quantity - removing Item - : $($item.name)" -foregroundColor Yellow
+        
                 $this.itemsAvailable.remove($item)
+
+                # adding to itemSold
+                
+                $soldItem = $this.itemsSold | Where-Object { $_.name -eq $itemName }
+                
+                
+                if ($solditem) {
+                    # debug
+                    # write-host "Decrement quantitys - olditem exist : $($soldItem.name) qty:$($soldItem.quantity)" -foregroundColor Yellow
+                    
+                    $solditem.quantity += 1
+                     # debug
+                    # write-host "Decrement quantity - solditem  $($soldItem.name) new qty:$($soldItem.quantity)" -foregroundColor Yellow
+                   
+                }
+                else {
+                    
+                    $soldItem = [Item]::New($item.name, $item.description, $item.price, $item.metadata)
+                    
+                    # debug
+                    # write-host "Decrement quantity - solditem not exist creating: $($soldItem.name) qty:$($soldItem.quantity)" -foregroundColor Yellow
+                    
+                    $soldItem.quantity = 1
+                    # debug
+                    # write-host "Decrement quantity - solditem set: $($soldItem.name) qty:$($soldItem.quantity)" -foregroundColor Yellow
+                    
+                    
+                    $this.itemsSold.add($soldItem)
+
+                    # debug
+                    # write-host "Decrement quantity - added to itemsSold: $($soldItem.name) qty:$($soldItem.quantity)" -foregroundColor Yellow
+                    
+                }
+
             }
-            $this.Save()
 
         }
-        $found = $false
-        $this.itemsSold | ForEach-Object {
-            if ($_.name -eq $itemName) {
-                $_.quantity += 1
-                $found = $true
-            }
-        }
-        if (! $found) {
-            $soldItem = [Item]::New($item.name,$item.description,$item.price,$item.Metadata)
-            $soldItem.quantity = 1
-            $this.itemsSold.add($soldItem)
-        }
+          # debug
+        # write-host "Decrement quantity - Saving state " -foregroundColor Yellow
+                    
+        $this.Save()
+
     }
+
 
     [bool] IsAvailable([string] $itemName) {
         $item = $this.itemsAvailable | Where-Object { $_.name -eq $itemName }

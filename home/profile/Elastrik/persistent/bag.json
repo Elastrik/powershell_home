@@ -1,18 +1,27 @@
 {
+  "maxCapacity": 0,
+  "stats": {
+    "totalAcquired": 2,
+    "lastModified": "2026-05-22T16:59:59.8497256Z"
+  },
   "items": [
     {
       "name": "Renfort de filet",
       "description": "Augmente un peu la capacité du filet",
-      "price": 100,
-      "quantity": 4,
+      "price": 10,
+      "quantity": 6,
       "Metadata": {
         "NetCapacity": 1
       }
+    },
+    {
+      "name": "Carte",
+      "description": "Liste les ports connus",
+      "price": 50,
+      "quantity": 1,
+      "Metadata": {
+        "CanShowMap": true
+      }
     }
-  ],
-  "maxCapacity": 0,
-  "stats": {
-    "lastModified": "2026-05-20T10:50:15.9079693Z",
-    "totalAcquired": 2
-  }
+  ]
 }
