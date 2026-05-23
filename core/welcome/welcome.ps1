@@ -12,7 +12,7 @@ class Welcome {
         $date = Get-Date -Format "dddd dd/MM/yyyy  HH:mm"
         # $psVersion = $PSVersionTable.PSVersion.ToString()
         Write-Host "  ─────────────────────────────────────────────────" -ForegroundColor DarkGray
-        Write-Host "  user     " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host "VICTOR"           -ForegroundColor Magenta
+        Write-Host "  user     " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host "$global:profile_name"           -ForegroundColor Magenta
         Write-Host "  machine  " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $env:COMPUTERNAME  -ForegroundColor Cyan
         # Write-Host "  shell    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host "PowerShell $psVersion" -ForegroundColor Green
         Write-Host "  heure    " -ForegroundColor DarkGray -NoNewline; Write-Host "❯ " -NoNewline; Write-Host $date              -ForegroundColor Yellow

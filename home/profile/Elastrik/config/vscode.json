@@ -1,0 +1,29 @@
+{
+    "title": "~~ MENU VSCODE ~~",
+    "subtitle": "Quel workspace ?",
+    "color" : "DarkCyan",
+    "options": [
+        {
+            "key": "1",
+            "label": "BIDOUILLE",
+            "command": "codeWs",
+            "color" : "DarkMagenta"
+        },
+        {
+            "key": "2",
+            "label": "Powershell",
+            "command": "codeWs PSH",
+            "color" : "Magenta"
+        },
+        {
+            "key": "R",
+            "label": "Retour",
+            "command": "back"
+        },
+         {
+            "key"    : "Q",
+            "label"  : "Quitter",
+            "command": "exit"
+        }
+    ]
+}
