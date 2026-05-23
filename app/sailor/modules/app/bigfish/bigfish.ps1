@@ -161,7 +161,9 @@ class FishNet {
     }
     [bool] CanSetDock() {
         $CanSetDock = $false
-        [Bag]::GetInstance().items | ForEach-Object {
+        $b = [Bag]::GetInstance()
+        # write-Host $b
+        $b.items | ForEach-Object {
             if ($_.Metadata["CanSetDock"] -and $_.Metadata["CanSetDock"] -eq "true") {
                 $CanSetDock = $true
             }
@@ -170,7 +172,8 @@ class FishNet {
     }
     [bool] CanShowMap() {
         $canShowMap = $false
-        [Bag]::GetInstance().items | ForEach-Object {
+        $b = [Bag]::GetInstance()
+        $b.items | ForEach-Object {
             if ($_.Metadata["CanShowMap"] -and $_.Metadata["CanShowMap"] -eq "true") {
                 $canShowMap = $true
             }
@@ -688,7 +691,7 @@ class BigFishMenu {
             color    = "Blue"
             options  = @()
         }
-
+        $b = [Bag]::GetInstance()
         if ([BigFish]::GetInstance().Fisher.Net.CanShowMap()) {
             $options = @{
                 key     = "M"

@@ -7,13 +7,7 @@ class Item {
     [int] $quantity
     [Hashtable] $Metadata
 
-    static [Bag] GetInstance() {
-        if ($null -eq $global:sailor_bag) {
-            $bag_prf_path = Join-Path $global:persistent_data "bag.json"
-            $global:sailor_bag = [Bag]::New($bag_prf_path)
-        }
-        return $global:sailor_bag
-    }
+    
 
     Item([string] $name, [string] $description, [int] $price, [Hashtable] $metadata) {
         $this.name = $name
@@ -107,6 +101,17 @@ class Bag {
     [int] $maxCapacity
     [string] $SavePath
     [Hashtable] $stats
+
+    static [Bag] GetInstance() {
+        # write-Host "[Bag] getting instance" -ForegroundColor Red
+        if ($null -eq $global:sailor_bag) {
+            $bag_prf_path = Join-Path $global:persistent_data "bag.json"
+  
+            # write-Host "[Bag] First init" -ForegroundColor Red
+            $global:sailor_bag = [Bag]::New($bag_prf_path)
+        }
+        return $global:sailor_bag
+    }
 
     Bag([string] $savePath) {
         $this.SavePath = $savePath

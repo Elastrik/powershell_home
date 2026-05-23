@@ -22,7 +22,7 @@
 #
 # Class [CargoShip]
 # - [int] $nitialcapacity = 5
-# - [System.Collections.Generic.List[Parel]] $payload
+# - [System.Collections.Generic.List[Parcel]] $payload
 #
 # - GetCapacity() {this.initialCapacity + Bag}
 # - Load([String $filname]){$this.payload.add([Parcel::New([String] $filename)])}
@@ -51,7 +51,7 @@
 Class Cargo {
     [CargoShip]     $cargoShip
 
-    [Cargo] GetInstance() {
+    static [Cargo] GetInstance() {
         if ($null -eq $global:sailor_cargo) {
             $global:sailor_cargo = [Cargo]::New()
         }
@@ -68,8 +68,14 @@ Class Cargo {
             "deliver" { $this.Deliver() }
             # "help" { $this.Renderer.RenderHelp($this) }
             default { 
-           
+                $this.List()
             }
+        }
+    }
+    [void] List(){
+        write-host "Cargo Payload : "
+        $this.cargoShip.payload | ForEach-Object {
+            Write-Host ": $($_.startLocation) - $($_.price)  "
         }
     }
 
@@ -88,7 +94,10 @@ Class Cargo {
     }
 
     [void] Deliver(){
-        $wallet = 
+        $wallet = [Wallet]::GetInstance()
+        $wallet.addValue(
+            $this.cargoShip.Deliver()
+        )
     } 
 
 
@@ -139,7 +148,7 @@ Class Parcel {
             Write-Host "[Parcel] -> Parcel(<filename>) File $($filename) not found" -ForegroundColor "Red"
         }
         else {
-            $this.startLocation = $file.fulName
+            $this.startLocation = $file.fullName
             $this.filename = $file.Name
             $this.length = $file.Length
             
@@ -187,7 +196,7 @@ Class CargoShip {
     [System.Collections.Generic.List[Parcel]] $payload
     
     CargoShip() {
-        $this.payload = [System.Collections.Generic.List[Parel]]::New()
+        $this.payload = [System.Collections.Generic.List[Parcel]]::New()
     
     }
 
@@ -208,10 +217,14 @@ Class CargoShip {
     }
 
     [void] Load([String] $filename) {
-        if-not ($this.payload.contains($filename)) {
+        Write-Host "[Cargoship].Load() - $filename"
+
+        if(-not $this.payload.contains($filename)) {
+            Write-Host "[Cargoship].Load() - Loading the new file"
             $this.payload.add([Parcel]::New($filename)) 
         }
     }
+
 
     [int] Deliver() {
         $gain = 0
@@ -219,6 +232,7 @@ Class CargoShip {
         $this.payload | ForEach-Object {
             $gain += $_.Deliver()
         }
+
         return $gain
     }
 

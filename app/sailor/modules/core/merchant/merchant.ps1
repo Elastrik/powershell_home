@@ -191,7 +191,7 @@ class Merchant {
                     $optionColor = "Yellow"
                     $option = @{
                         key     = $optionIndex.ToString()
-                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet].::GetInstance().devise } else { '$' }) (x$($item.quantity))"
+                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet]::GetInstance().devise } else { '$' }) (x$($item.quantity))"
                         command = @("[Merchant]::MerchantSell( '$($item.name)')", "exit")    
                         color   = "$($optionColor)"
                     }
@@ -201,7 +201,7 @@ class Merchant {
 
                     $option = @{
                         key     = $optionIndex.ToString()
-                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet].::GetInstance().devise } else { '$' }) (x$($item.quantity))"
+                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet]::GetInstance().devise } else { '$' }) (x$($item.quantity))"
                         command = @("Write-host 'Solde insuffisant' -ForegroundColor Red")
                         color   = "$($optionColor)"
                     }

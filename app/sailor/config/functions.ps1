@@ -81,7 +81,7 @@ $bigfish_class = Join-Path $global:sailor_bigfish_path  "bigfish.ps1"
 # - fonction associées
 $global:sailor_bigfish_instance = $null
 function bigfish {
-    [BigFish].GetInstance().Execute($args)
+    [BigFish]::GetInstance().Execute($args)
 }
 
 
