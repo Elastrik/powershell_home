@@ -72,7 +72,7 @@ Class Cargo {
             }
         }
     }
-    [void] List(){
+    [void] List() {
         write-host "Cargo Payload : "
         $this.cargoShip.payload | ForEach-Object {
             Write-Host ": $($_.startLocation) - $($_.price)  "
@@ -85,19 +85,33 @@ Class Cargo {
         }
         else {
 
-            if(Test-Path $param){
+            if (Test-Path $param) {
                 $this.cargoShip.Load($param)
-            }else{
+            }
+            else {
                 Write-Host "[Cargo].Load() - file not found : $($param)"
             }
         }
     }
 
-    [void] Deliver(){
+    [void] Deliver() {
+        # debug
+        write-host "[Cargo] Deliver()" -ForegroundColor Yellow
+
         $wallet = [Wallet]::GetInstance()
-        $wallet.addValue(
-            $this.cargoShip.Deliver()
-        )
+        # debug
+        write-host "[Cargo] Deliver() wallet loaded - value : $($wallet.Valeur)" -ForegroundColor Yellow
+
+        $valueDelivered = $this.cargoShip.Deliver()
+        # debug
+        write-host "[Cargo] Deliver() wallet loaded - Value Delivered : $($valueDelivered)" -ForegroundColor Yellow
+
+        $wallet.addValue($valueDelivered)
+
+        # debug
+        write-host "[Cargo] Deliver() wallet updated  -wallet :  : $($wallet.valeur)" -ForegroundColor Yellow
+
+
     } 
 
 
@@ -219,7 +233,7 @@ Class CargoShip {
     [void] Load([String] $filename) {
         Write-Host "[Cargoship].Load() - $filename"
 
-        if(-not $this.payload.contains($filename)) {
+        if (-not $this.payload.contains($filename)) {
             Write-Host "[Cargoship].Load() - Loading the new file"
             $this.payload.add([Parcel]::New($filename)) 
         }
@@ -228,10 +242,14 @@ Class CargoShip {
 
     [int] Deliver() {
         $gain = 0
+        7
+        foreach ($parcel in $this.payload) {
+           
+            $gain += $parcel.Deliver()
 
-        $this.payload | ForEach-Object {
-            $gain += $_.Deliver()
-        }
+            #  on retire le parce le la liste
+            Remove-Item $parcel
+        } 
 
         return $gain
     }

@@ -1,13 +1,64 @@
 {
-  "options": [
-    {
-      "command": "exit",
-      "label": "Quitter",
-      "color": "Gray",
-      "key": "Q"
-    }
-  ],
-  "subtitle": "Que souhaitez-vous faire ?",
-  "color": "Cyan",
-  "title": "~~ VSCODE ~~"
+    "title": "~~ MENU MAISON ~~",
+    "subtitle": "Que souhaitez-vous faire ?",
+    "color": "Yellow",
+    "options": [
+        {
+            "key": "1",
+            "label": "Youtube",
+            "command": "youtube",
+            "color": "Red"
+        },
+        {
+            "key": "2",
+            "label": "YT Music",
+            "command": "musique",
+            "color": "DarkRed"
+        },
+        {
+            "key": "3",
+            "label": "Google Keep",
+            "command": "Keep",
+            "color": "Yellow"
+        },
+        {
+            "key": "4",
+            "label": "Google Sheet",
+            "command": "Sheet",
+            "color": "Green"
+        },
+        {
+            "key": "5",
+            "label": "Mails",
+            "command": "gmail"
+        },
+        {
+            "key": "6",
+            "label": "Steam",
+            "command": "steam",
+            "color": "DarkBlue"
+        },
+        {
+            "key": "7",
+            "label": "GitHub Desktop",
+            "command": "gitHubDesktop",
+            "color": "Magenta"
+        },
+        {
+            "key": "8",
+            "label": "VSCODE",
+            "submenu": "home\\profile\\Elastrik\\config\\vscode.json",
+            "color": "Cyan"
+        },
+        {
+            "key": "F",
+            "label": "BigFish — Gestion des fichiers",
+            "command": "bigfish"
+        },
+        {
+            "key": "Q",
+            "label": "Quitter",
+            "command": "exit"
+        }
+    ]
 }
