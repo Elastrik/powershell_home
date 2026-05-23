@@ -127,7 +127,6 @@ class DockMapRenderer {
 
 Class DockMenu {
     static [string] main() {
-        # $bf = $global:sailor_bigfish_instance
         $menu = @{
             title    = "~~ BIGFISH ~~"
             subtitle = "Bienvenue au port [$((Get-Location).Path)]"

@@ -22,6 +22,14 @@ class Merchant {
     [System.Collections.Generic.List[Item]] $itemsSold;
     [string] $SavePath
 
+    static [Merchant] GetInstance() {
+        if ($null -eq $global:sailor_merchant) {
+            $merch_prf_path = Join-Path $global:persistent_data "merchant.json"
+            $global:sailor_merchant = [Merchant]::New($merch_prf_path)
+        }
+        return $global:Sailor_merchant
+    }
+
     Merchant([string] $savePath) {
         $this.SavePath = $savePath
         $this.itemsAvailable = @()
@@ -123,7 +131,7 @@ class Merchant {
                     # write-host "Decrement quantitys - olditem exist : $($soldItem.name) qty:$($soldItem.quantity)" -foregroundColor Yellow
                     
                     $solditem.quantity += 1
-                     # debug
+                    # debug
                     # write-host "Decrement quantity - solditem  $($soldItem.name) new qty:$($soldItem.quantity)" -foregroundColor Yellow
                    
                 }
@@ -149,7 +157,7 @@ class Merchant {
             }
 
         }
-          # debug
+        # debug
         # write-host "Decrement quantity - Saving state " -foregroundColor Yellow
                     
         $this.Save()
@@ -170,7 +178,7 @@ class Merchant {
 
         $menu = @{
             title    = "Marchand"
-            subtitle = "solde :  $($global:sailor_wallet.valeur) $($global:sailor_wallet.devise)"
+            subtitle = "solde :  $([Wallet]::GetInstance().valeur) $([Wallet]::GetInstance().devise)"
             color    = "DarkYellow"
             options  = @()
         }
@@ -183,7 +191,7 @@ class Merchant {
                     $optionColor = "Yellow"
                     $option = @{
                         key     = $optionIndex.ToString()
-                        label   = "$($item.name) - $($item.price) $(if ($global:sailor_wallet.devise) { $global:sailor_wallet.devise } else { '$' }) (x$($item.quantity))"
+                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet].::GetInstance().devise } else { '$' }) (x$($item.quantity))"
                         command = @("[Merchant]::MerchantSell( '$($item.name)')", "exit")    
                         color   = "$($optionColor)"
                     }
@@ -193,7 +201,7 @@ class Merchant {
 
                     $option = @{
                         key     = $optionIndex.ToString()
-                        label   = "$($item.name) - $($item.price) $(if ($global:sailor_wallet.devise) { $global:sailor_wallet.devise } else { '$' }) (x$($item.quantity))"
+                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet].::GetInstance().devise } else { '$' }) (x$($item.quantity))"
                         command = @("Write-host 'Solde insuffisant' -ForegroundColor Red")
                         color   = "$($optionColor)"
                     }
@@ -230,9 +238,10 @@ class Merchant {
 
     static [void ] MerchantSell ([string] $itemName) {
         
-        $merchant = $global:sailor_merchant
-        $bag = $global:sailor_bag
-        $wallet = $global:sailor_wallet
+        $merchant = [Merchant]::GetInstance()
+        $bag = [Bag]::GetInstance()
+
+        $wallet = [Wallet]::GetInstance()
 
         if ($merchant.IsAvailable($itemName)) {
             $merchant.SellItem($itemName, $bag, $wallet)

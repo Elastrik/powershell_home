@@ -10,5 +10,7 @@ $global:sailor_dock_path       = Join-Path $global:sailor_modules "core/dockMap"
 
 #app
 $global:sailor_bigfish_path = Join-Path $global:sailor_modules "app/bigfish"
+$global:sailor_cargo_path   = Join-Path $global:sailor_modules "app/cargo"
+
 
 
