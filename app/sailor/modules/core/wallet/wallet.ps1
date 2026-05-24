@@ -59,7 +59,8 @@ class WalletRenderer {
     [void] RenderWallet([Wallet] $w) {
         $inner = 40  # largeur intérieure fixe
         $top = "═" * ($inner + 2)
-
+        $pad = 20
+        
         Write-Host ""
         Write-Host "  ╔══[ " -ForegroundColor DarkGray -NoNewline
         Write-Host "WALLET" -ForegroundColor Yellow -NoNewline
@@ -78,8 +79,9 @@ class WalletRenderer {
             $w.Metadata.GetEnumerator() | ForEach-Object {
                 $val = "$($_.Value)"
                 Write-Host "  ║  " -ForegroundColor DarkGray -NoNewline
-                Write-Host "$($_.Key.PadRight(10)) : " -ForegroundColor Magenta -NoNewline
-                Write-Host $val.PadRight($inner - 13) -ForegroundColor White -NoNewline
+
+                Write-Host "$($_.Key.PadRight($pad)) : " -ForegroundColor Magenta -NoNewline
+                Write-Host $val.PadRight($inner - $pad - 3) -ForegroundColor White -NoNewline
                 Write-Host "║" -ForegroundColor DarkGray
             }
         }

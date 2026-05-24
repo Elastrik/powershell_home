@@ -64,8 +64,9 @@ Class Cargo {
 
     [void] Execute([String[]] $param) {
         switch ($param[0]) {
-            "load" { $this.Load(($param[1])) }
+            "load" { $this.Load($param[1]) }
             "deliver" { $this.Deliver() }
+            "sail" {$this.Sail($param[1])}
             # "help" { $this.Renderer.RenderHelp($this) }
             default { 
                 $this.List()
@@ -75,7 +76,7 @@ Class Cargo {
     [void] List() {
         write-host "Cargo Payload : "
         $this.cargoShip.payload | ForEach-Object {
-            Write-Host ": $($_.startLocation) - $($_.price)  "
+            Write-Host "Parcel : $($_.startLocation) - price : $($_.price) - Route: $($_.route)"
         }
     }
 
@@ -96,23 +97,37 @@ Class Cargo {
 
     [void] Deliver() {
         # debug
-        write-host "[Cargo] Deliver()" -ForegroundColor Yellow
+        # write-host "[Cargo] Deliver()" -ForegroundColor Yellow
 
         $wallet = [Wallet]::GetInstance()
         # debug
-        write-host "[Cargo] Deliver() wallet loaded - value : $($wallet.Valeur)" -ForegroundColor Yellow
+        # write-host "[Cargo] Deliver() wallet loaded - value : $($wallet.Valeur)" -ForegroundColor Yellow
 
         $valueDelivered = $this.cargoShip.Deliver()
         # debug
-        write-host "[Cargo] Deliver() wallet loaded - Value Delivered : $($valueDelivered)" -ForegroundColor Yellow
+        # write-host "[Cargo] Deliver() wallet loaded - Value Delivered : $($valueDelivered)" -ForegroundColor Yellow
 
         $wallet.addValue($valueDelivered)
 
         # debug
-        write-host "[Cargo] Deliver() wallet updated  -wallet :  : $($wallet.valeur)" -ForegroundColor Yellow
+        # write-host "[Cargo] Deliver() wallet updated  -wallet :  : $($wallet.valeur)" -ForegroundColor Yellow
 
 
     } 
+    [Void] Sail([String] $param) {
+        if (-not $param) {
+            write-host "[Cargo].Sail() - no parameter"  
+        }
+        else {
+
+            if (Test-Path $param) {
+                $this.cargoShip.Sail($param)
+            }
+            else {
+                Write-Host "[Cargo].Sail() - path not found : $($param)"
+            }
+        }
+    }
 
 
 } 
@@ -157,12 +172,19 @@ Class Parcel {
 
 
     Parcel([String] $filename) {
+        # debug
+        # write-host "[Parcel] cstor - Making Parcel from $($fileName)"
+        
         $file = Get-ChildItem -File | Where-Object { $_.Name -eq $filename } 
         if ($null -eq $file) {
             Write-Host "[Parcel] -> Parcel(<filename>) File $($filename) not found" -ForegroundColor "Red"
         }
         else {
-            $this.startLocation = $file.fullName
+            # debug
+            # write-host "[Parcel] cstor -File exist"
+        
+
+            $this.startLocation = $file.FullName
             $this.filename = $file.Name
             $this.length = $file.Length
             
@@ -175,7 +197,17 @@ Class Parcel {
     } 
 
     [bool] StillThere() {
-        return (Test-Path $this.fullName)
+
+        # debug
+        # write-host "[Parcel] Stillthere() - $($this.startLocation)"
+        
+        $stillthere = Test-Path $this.startLocation
+        
+        # debug
+        # write-host "[Parcel] Stillthere() ?  $($stillthere)"
+        
+
+        return $stillthere
     }
 
     [int] GetTransportPrice() {
@@ -189,17 +221,48 @@ Class Parcel {
     }
 
     [int] Deliver() {
+
+        # debug
+        # write-host "[Parcel] Deliver() - $($this.filename)"
+        
+
         $totalGain = 0
-        if ($this.stillThere) {
+        if ($this.stillThere()) {
+
+            # debug
+            # write-host "[Parcel] Deliver() -FileStillThere"
+            
             $totalGain += $this.GetTransportPrice()
+
+            # debug
+            # write-host "[Parcel] Deliver() -FileStillThere - Moving Item"
+            
             $this.Move()
+
+            $wallet = [Wallet]::GetInstance()
+            $parcelCount  = $wallet.GetMetaData("ParcelCount")
+
+            # debug
+            write-host "[Parcel] Deliver() - Wallet ParcelCount loaded - $($parcelCount)"
+            
+
+            if($null -eq $parcelCount){
+                $parcelCount = 1 
+            }else{
+                $parcelCount++
+            }
+            $wallet.SetMetadata("ParcelCount",$parcelCount)
 
         }
         return $totalGain
     }
 
-    Move() {
-        Move-Item -Path $this.filename -Destination (Get-Location).Path
+    [void] Move() {
+        # debug
+        # write-host "[Parcel] Move() - from : $($this.startLocation) -to : $((Get-Location).Path) "
+            
+            
+        Move-Item -Path $this.startLocation -Destination (Get-Location).Path
     }
 }
 
@@ -242,16 +305,38 @@ Class CargoShip {
 
     [int] Deliver() {
         $gain = 0
-        7
-        foreach ($parcel in $this.payload) {
-           
-            $gain += $parcel.Deliver()
+        
+        # debug
+        # write-host "[Cargoship] Deliver()"
+        
+        #  @() permet de passer une copie de l'obet car on ne peut pas moifier la liste quand on la lit avec forEach
+        @($this.payload) | ForEach-Object {
+            # debug
+            # write-host "[Cargoship] Deliver() - Parcel filename : $($parcel.filename) delivering" 
+        
+            $gain += $_.Deliver()
+
 
             #  on retire le parce le la liste
-            Remove-Item $parcel
+            $this.payload.Remove($_)
         } 
 
         return $gain
+    }
+
+    [CargoShip] Sail([String] $location) {
+        if (Test-Path $location) {
+            $this.payload | ForEach-Object {
+                $_.route++
+            }
+            Set-Location $location
+
+        }
+        else {
+            Write-host "[Cargoship] Sail() - location not found : $location"
+        }
+
+        return $this
     }
 
 }
