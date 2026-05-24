@@ -384,7 +384,7 @@ class CargoMenu {
         }
         $optionIndex = 1
         $options = @{
-            key     = ($optionIndex++).ToString()
+            key     = 'N'
             label   = "Naviguer"
             # command = "[Menu]::New([BigFishMenu]::SailingMenu()).show()"
             command = "[CargoRenderer]::RenderSailingMenu()"
@@ -399,6 +399,15 @@ class CargoMenu {
             color   = "White"
         }
         $menu.options += $options
+
+        $options = @{
+            key     = "M"
+            label   = "Manifeste de chargement"
+            command = @("[CargoRenderer]::RenderManifest()", "[CargoRenderer]::RenderMainMenu()")
+            color   = "White"
+        }
+        $menu.options += $options
+
 
         if ($cargo.cargoShip.payload.count -gt 0) {
             $options = @{
@@ -522,7 +531,7 @@ class CargoMenu {
         $options = @{
             key     = "Q"
             label   = "Quitter le menu de Chargement"
-            command = "back"
+            command = @("exit")
             color   = "Gray"
         }
         $menu.options += $options
@@ -561,8 +570,11 @@ Class CargoRenderer {
         $payload_count = $cargo.cargoShip.payload.count
         $capacity = $cargo.cargoShip.GetCapacity()
         $payload_label = "Cargoship Payload [$($payload_count)/$($capacity)]" 
-
         Write-host "█ $($payload_label.PadRight(51,' ')) █"  -ForegroundColor DarkGray
+
+        Write-host "█ ~ Oil Price : $(([String] [CargoPrices]::getOilPrice()).PadRight(5,' '))"   -ForegroundColor DarkGray -NoNewLine
+        write-host "                                 █" -ForegroundColor DarkGray
+        
         write-host "█_____________________________________________________█" -ForegroundColor DarkGray
         
     }
@@ -590,15 +602,43 @@ Class CargoRenderer {
         ).show()
     }
 
-    static [void] RenderManifest(){
+    static [void] RenderManifest() {
         [CargoRenderer]::RenderLogo()
         [CargoRenderer]::RenderCargoshipInfo()
         
-#  a faire - detail de tout ce qu'il y a dans le payload
+        #  a faire - detail de tout ce qu'il y a dans le payload
+        $cargo = [Cargo]::GetInstance()
+        $devise = [Wallet]::GetInstance().devise 
+        $totalPrice = 0
+        Write-Host ""
+        Write-Host "~~ [MANIFESTE DE CHARGEMENT] ~~ " -ForegroundColor Magenta
+        $cargo.cargoShip.payload | ForEach-Object {
+            Write-Host "> " -ForegroundColor DarkMagenta -NoNewLine
+            Write-Host "[$($_.filename)](" -ForegroundColor DarkYellow  -NoNewLine
+            Write-Host "$(([String] $_.price).PadLeft(5,' '))$($devise)" -ForegroundColor Yellow -NoNewLine
+            Write-Host ") / Routes " -ForegroundColor DarkMagenta -NoNewLine
+            Write-Host "$(([String] $_.route).PadLeft(5,' '))$($devise)" -ForegroundColor Yellow -NoNewLine
+            Write-Host " -> " -ForegroundColor DarkMagenta -NoNewline
+            Write-Host "$(([String]$_.getTransportPrice() + $devise).PadLeft(5,' '))" -ForegroundColor White 
+            
+            Write-Host ">  -[ Origine : " -ForegroundColor DarkBlue -NoNewLine
+            Write-Host " $($_.startLocation)" -ForegroundColor Gray -NoNewline
+            Write-Host " ]" -ForegroundColor DarkBlue
+            
+            # Write-Host " "
 
+            $totalPrice += $_.getTransportPrice()
 
-        Write-Host "[Entree pour continuer]"
-        Read-Host ""
+        }
+        Write-Host "~~ [FIN DU MANIFESTE] ~~ " -ForegroundColor Magenta
+        Write-Host "> Total : " -ForegroundColor DarkRed -NoNewline
+        Write-Host "$(([String]$totalPrice + $devise).PadLeft(5,0))" -ForegroundColor White 
+         
+        
+
+        Write-Host "[Entree pour continuer]" -NoNewLine
+        Read-Host " "
+
     }
 
 }
