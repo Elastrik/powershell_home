@@ -86,8 +86,8 @@ function bigfish {
 
 
 # cargo
-$cargo_class = Join-Path $global:sailor_cargo_path  "cargo.ps1" 
-. $cargo_class
+$cargo_app = Join-Path $global:sailor_cargo_path  "cargo.ps1" 
+. $cargo_app
 
 $global:sailor_cargo = $null 
 function cargo () {

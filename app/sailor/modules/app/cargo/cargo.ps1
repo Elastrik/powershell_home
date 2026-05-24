@@ -35,7 +35,7 @@
 
 
 
-# ### CargoUi.ps1 
+# ### Classe de menu / rendering
 # Class [CargoMenu] : 
 # - static [String] GetMainMenu)([Cargo] $cargo) {}
 # - static [String] GetSailingMenu([Cargo] $cargo) {}
@@ -66,10 +66,12 @@ Class Cargo {
         switch ($param[0]) {
             "load" { $this.Load($param[1]) }
             "deliver" { $this.Deliver() }
-            "sail" {$this.Sail($param[1])}
+            "sail" { $this.Sail($param[1]) }
+            "list" { $this.List() }
+
             # "help" { $this.Renderer.RenderHelp($this) }
             default { 
-                $this.List()
+                [CargoRenderer]::RenderMainMenu()
             }
         }
     }
@@ -87,7 +89,9 @@ Class Cargo {
         else {
 
             if (Test-Path $param) {
-                $this.cargoShip.Load($param)
+                if ($this.cargoShip.Load($param)) {
+                    Write-host "[Cargo] Load() - Parcel not Loaded" -ForegroundColor Red
+                }
             }
             else {
                 Write-Host "[Cargo].Load() - file not found : $($param)"
@@ -240,18 +244,19 @@ Class Parcel {
             $this.Move()
 
             $wallet = [Wallet]::GetInstance()
-            $parcelCount  = $wallet.GetMetaData("ParcelCount")
+            $parcelCount = $wallet.GetMetaData("ParcelCount")
 
             # debug
             write-host "[Parcel] Deliver() - Wallet ParcelCount loaded - $($parcelCount)"
             
 
-            if($null -eq $parcelCount){
+            if ($null -eq $parcelCount) {
                 $parcelCount = 1 
-            }else{
+            }
+            else {
                 $parcelCount++
             }
-            $wallet.SetMetadata("ParcelCount",$parcelCount)
+            $wallet.SetMetadata("ParcelCount", $parcelCount)
 
         }
         return $totalGain
@@ -269,7 +274,7 @@ Class Parcel {
 
 Class CargoShip {
 
-    [int] $nitialcapacity = 5
+    [int] $initialcapacity = 5
     [System.Collections.Generic.List[Parcel]] $payload
     
     CargoShip() {
@@ -293,13 +298,21 @@ Class CargoShip {
         return $capacity
     }
 
-    [void] Load([String] $filename) {
-        Write-Host "[Cargoship].Load() - $filename"
+    [bool] Load([String] $filename) {
+        $loaded = $false
 
         if (-not $this.payload.contains($filename)) {
-            Write-Host "[Cargoship].Load() - Loading the new file"
-            $this.payload.add([Parcel]::New($filename)) 
+            
+            if ($this.payload.count -lt $this.GetCapacity()) {
+                $loaded = $true
+                $this.payload.add([Parcel]::New($filename)) 
+            }
+            else {
+                Write-Host "[Cargoship] cannot load - max capacity reached : $($this.GetCapacity())" -ForegroundColor Red
+            }
+
         }
+        return $loaded
     }
 
 
@@ -342,3 +355,132 @@ Class CargoShip {
 }
 
     
+
+# Class [CargoMenu] : 
+# - static [String] GetMainMenu)([Cargo] $cargo) {}
+# - static [String] GetSailingMenu([Cargo] $cargo) {}
+# - static [String] GetLoadMenu([Cargo] $cargo) {}
+# 
+
+class CargoMenu {
+
+    static [String] GetMainMenu() {
+        $cargo = [Cargo]::GetInstance()
+        $capacity = $cargo.cargoShip.GetCapacity()
+        $ParcelCount = $cargo.cargoShip.payload.count
+
+        $menu = @{
+            title    = "~~ CARGO MENU PRINCIPAL~~"
+            subtitle = "Transport de fichier - Chargement : [$($ParcelCount)/$($capacity)]"
+            color    = "DarkGray"
+            options  = @()
+        }
+        $optionIndex = 1
+        $options = @{
+            key     = ($optionIndex++).ToString()
+            label   = "Naviguer"
+            # command = "[Menu]::New([BigFishMenu]::SailingMenu()).show()"
+            command = "[CargoRenderer]::RenderSailingMenu()"
+            color   = "White"
+        }
+        $menu.options += $options
+
+
+        $options = @{
+            key     = "Q"
+            label   = "Quitter CARGO"
+            command = "exit"
+            color   = "Gray"
+        }
+        $menu.options += $options
+
+
+        
+        return $menu | ConvertTo-Json -Depth 5
+    }
+    static [String] GetSailingMenu() {
+        $cargo = [Cargo]::GetInstance()
+        $capacity = $cargo.cargoShip.GetCapacity()
+        $ParcelCount = $cargo.cargoShip.payload.count
+
+        $menu = @{
+            title    = "~~ CARGO MENU NAVIGATION ~~ Chargement : [$($ParcelCount)/$($capacity)]"
+            subtitle = "Emplacement : $((Get-Location).Path)"
+            color    = "DarkGray"
+            options  = @()
+        }
+        $optionKey = 1
+
+
+        $options = @{
+            key     = "B"
+            label   = "Demi-tour (..)"
+            command = @("set-Location ..", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
+            color   = "Blue"
+        }
+        $menu.options += $options
+
+        Get-ChildItem -Directory | ForEach-Object {
+            $location = $_.FullName
+         
+            $label = $_.Name
+            $color = "Blue"
+         
+            $options = @{
+                key     = ($optionKey++).toString()
+                label   = $label
+                command = @("cargo sail $location", "exit", "[CargoRenderer]::RenderSailingMenu()")
+                color   = $color
+            }
+            $menu.options += $options
+        }    
+
+        $options = @{
+            key     = "Q"
+            label   = "Quitter le menu Navigation"
+            command = "exit"
+            color   = "Gray"
+        }
+        $menu.options += $options
+        
+        return $menu | ConvertTo-Json -Depth 5
+    }
+}
+
+# Class [CargoRenderer] : 
+#   RenderLogo()
+#   RenderHeader()
+#   RenderCargo() 
+#   RenderCargoLoad()
+
+Class CargoRenderer {
+    static [String[]] $logoname = @(
+        " ██████╗ █████╗ ██████╗  ██████╗  ██████╗ "
+        "██╔════╝██╔══██╗██╔══██╗██╔════╝ ██╔═══██╗"
+        "██║     ███████║██████╔╝██║  ███╗██║   ██║"
+        "██║     ██╔══██║██╔══██╗██║   ██║██║   ██║"
+        "╚██████╗██║  ██║██║  ██║╚██████╔╝╚██████╔╝"
+        " ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ "
+    )
+    static [String[]] $logoColor = @("White", "White", "Gray", "DarkGray", "DarkGray", "DarkRed")
+
+    static [void] RenderLogo() {
+        write-host ""
+        for ($i = 0; $i -lt [CargoRenderer]::logoname.Length; $i++) {
+            Write-Host "$([CargoRenderer]::logoname[$i])" -ForegroundColor "$([CargoRenderer]::logoColor[$i])"
+        }
+    }
+    static [void] RenderMainMenu() {
+        [CargoRenderer]::RenderLogo()
+        [Menu]::New(
+            [CargoMenu]::GetMainMenu()
+        ).show()
+    }
+    static [void] RenderSailingMenu() {
+        [CargoRenderer]::RenderLogo()
+        [Menu]::New(
+            [CargoMenu]::GetSailingMenu()
+        ).show()
+    }
+
+}

@@ -704,7 +704,7 @@ class BigFishMenu {
 
         $optionKey = 1
         $options = @{
-            key     = "B"
+            key     = ".."
             label   = "Demi-tour (..)"
             command = @("set-Location ..", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
             color   = "Blue"
