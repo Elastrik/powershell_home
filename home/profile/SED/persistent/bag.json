@@ -1,8 +1,8 @@
 {
   "maxCapacity": 0,
   "stats": {
-    "totalAcquired": 8,
-    "lastModified": "2026-05-25T09:57:34.0648949Z"
+    "totalAcquired": 5,
+    "lastModified": "2026-05-25T12:27:46.5580172Z"
   },
   "items": [
     {
@@ -46,16 +46,6 @@
       }
     },
     {
-      "name": "Petit Quai",
-      "description": "Permet d'établir un port'",
-      "price": 5000,
-      "quantity": 1,
-      "category": "dock",
-      "Metadata": {
-        "CanSetDock": true
-      }
-    },
-    {
       "name": "Carte",
       "description": "Liste les ports connus",
       "price": 50,
@@ -63,26 +53,6 @@
       "category": "dock",
       "Metadata": {
         "CanShowMap": true
-      }
-    },
-    {
-      "name": "Selecteur de poisson",
-      "description": "Permet de pêcher seulement certains types de poisson",
-      "price": 500,
-      "quantity": 1,
-      "category": "bigfish",
-      "Metadata": {
-        "CanFishByType": true
-      }
-    },
-    {
-      "name": "Treuil des profondeurs",
-      "description": "Permet de pêcher dans les sous dossiers",
-      "price": 2000,
-      "quantity": 1,
-      "category": "bigfish",
-      "Metadata": {
-        "CanGoDeep": true
       }
     }
   ]

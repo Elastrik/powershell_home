@@ -21,26 +21,6 @@
       }
     },
     {
-      "name": "Unité de stockage pour paquebot",
-      "description": "Augmente la capacité du cargo'",
-      "price": 100,
-      "quantity": 1,
-      "category": "cargo",
-      "Metadata": {
-        "CargoCapacity": 1
-      }
-    },
-    {
-      "name": "Petit Quai",
-      "description": "Permet d'établir un port'",
-      "price": 5000,
-      "quantity": 1,
-      "category": "dock",
-      "Metadata": {
-        "CanSetDock": true
-      }
-    },
-    {
       "name": "Carte",
       "description": "Liste les ports connus",
       "price": 50,
@@ -48,6 +28,28 @@
       "category": "dock",
       "Metadata": {
         "CanShowMap": true
+      }
+    }
+  ],
+  "ItemsAvailable": [
+    {
+      "name": "Renfort de filet",
+      "description": "Augmente un peu la capacité du filet",
+      "price": 10,
+      "quantity": 199,
+      "category": "bigfish",
+      "Metadata": {
+        "NetCapacity": 1
+      }
+    },
+    {
+      "name": "Treuil des profondeurs",
+      "description": "Permet de pêcher dans les sous dossiers",
+      "price": 2000,
+      "quantity": 1,
+      "category": "bigfish",
+      "Metadata": {
+        "CanGoDeep": true
       }
     },
     {
@@ -61,25 +63,23 @@
       }
     },
     {
-      "name": "Treuil des profondeurs",
-      "description": "Permet de pêcher dans les sous dossiers",
-      "price": 2000,
+      "name": "Petit Quai",
+      "description": "Permet d'établir un port'",
+      "price": 5000,
       "quantity": 1,
-      "category": "bigfish",
+      "category": "dock",
       "Metadata": {
-        "CanGoDeep": true
+        "CanSetDock": true
       }
-    }
-  ],
-  "ItemsAvailable": [
+    },
     {
-      "name": "Renfort de filet",
-      "description": "Augmente un peu la capacité du filet",
-      "price": 10,
-      "quantity": 1,
-      "category": "bigfish",
+      "name": "Unité de stockage pour paquebot",
+      "description": "Augmente la capacité du cargo'",
+      "price": 100,
+      "quantity": 99,
+      "category": "cargo",
       "Metadata": {
-        "NetCapacity": 1
+        "CargoCapacity": 1
       }
     }
   ]

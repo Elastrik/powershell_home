@@ -67,7 +67,7 @@ class BagRenderer {
 
     [void] RenderItem([Item] $item) {
         $statusColor = if ($item.IsAvailable()) { "Yellow" } else { "DarkGray" }
-        $statusText = if ($item.IsAvailable()) { "✓ $($item.name) (x$($item.quantity)) - $($item.price)\" } else { "✗ $($item.name) - INDISPONIBLE" }
+        $statusText = if ($item.IsAvailable()) { "✓ $($item.name) (x$($item.quantity)) - $($item.price)$([Wallet]::GetInstance().devise)\" } else { "✗ $($item.name) - INDISPONIBLE" }
         
         Write-Host "  $statusText" -ForegroundColor $statusColor
         
@@ -189,8 +189,9 @@ class Bag {
             $existingItem.quantity += 1
         }
         else {
-            $item.quantity = 1
-            $this.items += $item
+            $newItem = [Item]::New($item.name, $item.description, $item.category,$item.price, 1, $item.Metadata)
+
+            $this.items.add($newItem)
             $this.stats.totalAcquired++
         }
         

@@ -56,7 +56,7 @@ class Merchant {
                 # Retrocompatibilité: si quantity manque, par défaut 1
                 $qty = if ($_.quantity) { $_.quantity } else { 1 }
                 # write-host "Merchant Loading Available : $($_.name) - Cat: $($_.category)"
-                $item = [Item]::new($_.name, $_.description,$_.category, $_.price, $qty, $md)
+                $item = [Item]::new($_.name, $_.description, $_.category, $_.price, $qty, $md)
                 $this.itemsAvailable += $item
             }
         }
@@ -70,7 +70,7 @@ class Merchant {
                     }
                 }
                 $qty = if ($_.quantity) { $_.quantity } else { 1 }
-                $item = [Item]::new($_.name, $_.description,$_.category, $_.price, $qty, $md) 
+                $item = [Item]::new($_.name, $_.description, $_.category, $_.price, $qty, $md) 
                 $this.itemsSold += $item
             }
         }
@@ -83,8 +83,10 @@ class Merchant {
 
         $item = $this.itemsAvailable | Where-Object { $_.name -eq $itemName }
         if ($item -and $item.IsAvailable()) {
-            write-host "Decrementing" -ForegroundColor Green
+            # write-host "SellItem - Decrementing" -ForegroundColor Green
             $this.DecrementQuantity($itemName)
+            # write-host "SellItem - qty : $($item.quantity)" -ForegroundColor Green
+            
             $bag.AddItem($item)
             $wallet.AddValue(- $item.price)
             $this.Save()
@@ -137,7 +139,7 @@ class Merchant {
                 }
                 else {
                     
-                    $soldItem = [Item]::New($item.name, $item.description,$item.category, $item.price, $item.metadata)
+                    $soldItem = [Item]::New($item.name, $item.description, $item.category, $item.price, $item.metadata)
                     
                     # debug
                     # write-host "Decrement quantity - solditem not exist creating: $($soldItem.name) qty:$($soldItem.quantity)" -foregroundColor Yellow
@@ -157,6 +159,8 @@ class Merchant {
             }
 
         }
+        # debug
+        # write-host "Decrement quantity - New Qty $($item.quantity)" -foregroundColor Yellow
         # debug
         # write-host "Decrement quantity - Saving state " -foregroundColor Yellow
                     
@@ -183,16 +187,16 @@ class Merchant {
             options  = @()
         }
         $categoryColors = @{
-            "sailor"    = "White"
-            "bigfish"   = "Cyan"
-            "Cargo"     = "DarkYellow"
+            "sailor"  = "White"
+            "bigfish" = "Cyan"
+            "Cargo"   = "DarkYellow"
             
             
         }
 
         $optionIndex = 1
         $this.itemsAvailable 
-        | Sort-Object -Property {$_.category + ' ' + ([String] $_.price).PadLeft(9,' ')} 
+        | Sort-Object -Property { $_.category + ' ' + ([String] $_.price).PadLeft(9, ' ') } 
         | ForEach-Object {
              
             if ($_.IsAvailable()) {
@@ -227,7 +231,7 @@ class Merchant {
 
             if (-not $this.isAvailable($item.name)) {
                 $option = @{
-                    key   = ($optionIndex++).ToString()  # Pas de clé sélectionnable
+                    key   = '' # Pas de clé sélectionnable
                     label = "$($item.name) - épuisé"
                     color = "DarkGray"
                 }

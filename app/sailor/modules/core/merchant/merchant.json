@@ -74,7 +74,7 @@
             "name": "Unité de stockage pour paquebot",
             "description": "Augmente la capacité du cargo'",
             "price": 100,
-            "quantity": 1,
+            "quantity": 100,
             "category": "cargo",
             "Metadata": {
                 "CargoCapacity": 1
