@@ -56,12 +56,12 @@ class Wallet {
 }
 
 class WalletRenderer {
-    [void] RenderWallet([Wallet] $w) {
+    static [void] RenderWallet() {
+        $w= [Wallet]::GetInstance()
         $inner = 40  # largeur intérieure fixe
         $top = "═" * ($inner + 2)
         $pad = 20
         
-        Write-Host ""
         Write-Host "  ╔══[ " -ForegroundColor DarkGray -NoNewline
         Write-Host "WALLET" -ForegroundColor Yellow -NoNewline
         Write-Host " ]$("═" * ($inner - 10))╗" -ForegroundColor DarkGray
@@ -87,7 +87,6 @@ class WalletRenderer {
         }
 
         Write-Host "  ╚$top╝" -ForegroundColor DarkGray
-        Write-Host ""
     }
 }
 

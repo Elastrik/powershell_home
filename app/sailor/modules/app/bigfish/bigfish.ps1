@@ -159,27 +159,8 @@ class FishNet {
         }
         return $CanScan
     }
-    [bool] CanSetDock() {
-        $CanSetDock = $false
-        $b = [Bag]::GetInstance()
-        # write-Host $b
-        $b.items | ForEach-Object {
-            if ($_.Metadata["CanSetDock"] -and $_.Metadata["CanSetDock"] -eq "true") {
-                $CanSetDock = $true
-            }
-        }
-        return $CanSetDock
-    }
-    [bool] CanShowMap() {
-        $canShowMap = $false
-        $b = [Bag]::GetInstance()
-        $b.items | ForEach-Object {
-            if ($_.Metadata["CanShowMap"] -and $_.Metadata["CanShowMap"] -eq "true") {
-                $canShowMap = $true
-            }
-        }
-        return $canShowMap
-    }
+
+
 
 
 }
@@ -561,7 +542,7 @@ class BigFishMenu {
 
 
         # peche en profondeur
-        $canGoDeep = $bf.fisher.net.canGoDeep()
+        $canGoDeep = $bf.fisher.net.CanGoDeep()
         if ($canGoDeep) {
             $options = @{
                 key     = ($optionKey++).toString()
@@ -691,8 +672,7 @@ class BigFishMenu {
             color    = "Blue"
             options  = @()
         }
-        $b = [Bag]::GetInstance()
-        if ([BigFish]::GetInstance().Fisher.Net.CanShowMap()) {
+        if ([Bag]::GetInstance().CanShowMap()) {
             $options = @{
                 key     = "M"
                 label   = "Afficher la carte"
@@ -745,7 +725,7 @@ class BigFishMenu {
             $menu.options += $options
         }
         else {
-            if ([BigFish]::GetInstance().Fisher.Net.CanSetDock()) {
+            if ([Bag]::GetInstance().CanSetDock()) {
                 $options = @{
                     key     = "S"
                     label   = "Poser un quai d'appoint"

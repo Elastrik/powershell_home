@@ -55,8 +55,8 @@ class Merchant {
                 }
                 # Retrocompatibilité: si quantity manque, par défaut 1
                 $qty = if ($_.quantity) { $_.quantity } else { 1 }
-
-                $item = [Item]::new($_.name, $_.description, $_.price, $qty, $md)
+                # write-host "Merchant Loading Available : $($_.name) - Cat: $($_.category)"
+                $item = [Item]::new($_.name, $_.description,$_.category, $_.price, $qty, $md)
                 $this.itemsAvailable += $item
             }
         }
@@ -70,7 +70,7 @@ class Merchant {
                     }
                 }
                 $qty = if ($_.quantity) { $_.quantity } else { 1 }
-                $item = [Item]::new($_.name, $_.description, $_.price, $qty, $md) 
+                $item = [Item]::new($_.name, $_.description,$_.category, $_.price, $qty, $md) 
                 $this.itemsSold += $item
             }
         }
@@ -137,7 +137,7 @@ class Merchant {
                 }
                 else {
                     
-                    $soldItem = [Item]::New($item.name, $item.description, $item.price, $item.metadata)
+                    $soldItem = [Item]::New($item.name, $item.description,$item.category, $item.price, $item.metadata)
                     
                     # debug
                     # write-host "Decrement quantity - solditem not exist creating: $($soldItem.name) qty:$($soldItem.quantity)" -foregroundColor Yellow
@@ -182,17 +182,26 @@ class Merchant {
             color    = "DarkYellow"
             options  = @()
         }
+        $categoryColors = @{
+            "sailor"    = "White"
+            "bigfish"   = "Cyan"
+            "Cargo"     = "DarkYellow"
+            
+            
+        }
 
         $optionIndex = 1
-        foreach ($item in $this.itemsAvailable) {
+        $this.itemsAvailable 
+        | Sort-Object -Property {$_.category + ' ' + ([String] $_.price).PadLeft(9,' ')} 
+        | ForEach-Object {
              
-            if ($item.IsAvailable()) {
-                if ($item.isAffordable()) {
-                    $optionColor = "Yellow"
+            if ($_.IsAvailable()) {
+                if ($_.isAffordable()) {
+                    $optionColor = $categoryColors[$_.category]
                     $option = @{
                         key     = $optionIndex.ToString()
-                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet]::GetInstance().devise } else { '$' }) (x$($item.quantity))"
-                        command = @("[Merchant]::MerchantSell( '$($item.name)')", "exit")    
+                        label   = "$($_.name) - $($_.price) $(if ([Wallet]::GetInstance().devise) { [Wallet]::GetInstance().devise } else { '$' }) (x$($_.quantity))"
+                        command = @("[Merchant]::MerchantSell( '$($_.name)')", "exit")    
                         color   = "$($optionColor)"
                     }
                 }
@@ -201,7 +210,7 @@ class Merchant {
 
                     $option = @{
                         key     = $optionIndex.ToString()
-                        label   = "$($item.name) - $($item.price) $(if ([Wallet]::GetInstance().devise) { [Wallet]::GetInstance().devise } else { '$' }) (x$($item.quantity))"
+                        label   = "$($_.name) - $($_.price) $(if ([Wallet]::GetInstance().devise) { [Wallet]::GetInstance().devise } else { '$' }) (x$($_.quantity))"
                         command = @("Write-host 'Solde insuffisant' -ForegroundColor Red")
                         color   = "$($optionColor)"
                     }
@@ -218,7 +227,7 @@ class Merchant {
 
             if (-not $this.isAvailable($item.name)) {
                 $option = @{
-                    key   = "x"  # Pas de clé sélectionnable
+                    key   = ($optionIndex++).ToString()  # Pas de clé sélectionnable
                     label = "$($item.name) - épuisé"
                     color = "DarkGray"
                 }

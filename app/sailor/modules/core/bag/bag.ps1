@@ -5,24 +5,28 @@ class Item {
     [string] $description
     [int] $price
     [int] $quantity
+    [String]   $category
     [Hashtable] $Metadata
 
     
 
-    Item([string] $name, [string] $description, [int] $price, [Hashtable] $metadata) {
+    Item([string] $name, [string] $description, [String] $category, [int] $price, [Hashtable] $metadata) {
         $this.name = $name
         $this.description = $description
         $this.price = $price
         $this.quantity = 1
         $this.Metadata = $metadata
+        $this.category = $category
     }
 
-    Item([string] $name, [string] $description, [int] $price, [int] $quantity, [Hashtable] $metadata) {
+    Item([string] $name, [string] $description, [String] $category, [int] $price, [int] $quantity, [Hashtable] $metadata) {
         $this.name = $name
         $this.description = $description
         $this.price = $price
         $this.quantity = $quantity
         $this.Metadata = $metadata
+        $this.category = $category
+
     }
 
     [bool] IsAvailable() {
@@ -34,6 +38,8 @@ class Item {
 
         return $account -ge $this.price
     }
+
+
 }
 
 
@@ -145,7 +151,7 @@ class Bag {
                         }
                     }
                     $qty = if ($_.quantity) { $_.quantity } else { 1 }
-                    $item = [Item]::new($_.name, $_.description, $_.price, $qty, $md)
+                    $item = [Item]::new($_.name, $_.description, $_.category, $_.price, $qty, $md)
                     $this.items += $item
                 }
             }
@@ -230,6 +236,28 @@ class Bag {
             return $false  # Illimité
         }
         return $this.GetItemCount() -ge $this.maxCapacity
+    }
+    [bool] CanSetDock() {
+        $CanSetDock = $false
+        
+        # write-Host $b
+        $this.items | ForEach-Object {
+            if ($_.Metadata["CanSetDock"] -and $_.Metadata["CanSetDock"] -eq "true") {
+                $CanSetDock = $true
+            }
+        }
+        return $CanSetDock
+    }
+
+    [bool] CanShowMap() {
+        $canShowMap = $false
+        
+        $this.items | ForEach-Object {
+            if ($_.Metadata["CanShowMap"] -and $_.Metadata["CanShowMap"] -eq "true") {
+                $canShowMap = $true
+            }
+        }
+        return $canShowMap
     }
 }
 

@@ -11,9 +11,8 @@ $wallet_class = Join-Path $global:sailor_wallet_path "wallet.ps1"
 $global:sailor_wallet = $null
 
 function Wallet() {
-    $w = [Wallet]::GetInstance()
-    $wrender = [WalletRenderer]::new()
-    $wrender.RenderWallet($w)
+
+    [WalletRenderer]::RenderWallet()
 }
 
 

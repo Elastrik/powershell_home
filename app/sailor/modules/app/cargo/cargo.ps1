@@ -451,6 +451,16 @@ class CargoMenu {
         }
         $optionKey = 1
 
+        if ([Bag]::GetInstance().CanShowMap()) {
+            $options = @{
+                key     = "M"
+                label   = "Afficher la carte"
+                command = "dock"
+                color   = "DarkYellow"
+            }
+            $menu.options += $options
+        }
+
 
         $options = @{
             key     = "B"
@@ -462,19 +472,50 @@ class CargoMenu {
 
         
         Get-ChildItem -Directory | ForEach-Object {
+
             $location = $_.FullName
-         
-            $label = $_.Name
-            $color = "Blue"
-         
+            if ([DockMap]::isDock($location)) {
+                $label = "$($_.Name) [PORT]"
+                $color = "Green"
+            }
+            else {
+                $label = $_.Name
+                $color = "Blue"
+            }
             $options = @{
                 key     = ($optionKey++).toString()
                 label   = $label
                 command = @("cargo sail '$location'", "exit", "[CargoRenderer]::RenderSailingMenu()")
                 color   = $color
             }
+
             $menu.options += $options
-        }    
+        }   
+
+        
+        # write-host " is dock ? $((Get-Location).Path)"
+        $location = "$((Get-Location).Path)"
+        $isDock = ([DockMap]::isDock($location) )
+        if ($isDock) {
+            $options = @{
+                key     = "P"
+                label   = "Aller au port"
+                command = @("exit", "[Menu]::New([DockMenu]::Main()).show()")
+                color   = "Green"
+            }
+            $menu.options += $options
+        }
+        else {
+            if ([Bag]::GetInstance().CanSetDock()) {
+                $options = @{
+                    key     = "S"
+                    label   = "Poser un quai d'appoint"
+                    command = @("setdock", "exit", "[CargoRenderer]::RenderSailingMenu()")
+                    color   = "DarkGreen"
+                }
+                $menu.options += $options
+            }
+        }
 
 
         $options = @{
@@ -538,7 +579,7 @@ class CargoMenu {
 
             # Cas plus de place 
             if ($loadcount -ge $capacity) {
-                $command = @( "exit","[CargoRenderer]::RenderLoadingMenu()")
+                $command = @( "exit", "[CargoRenderer]::RenderLoadingMenu()")
                 $color = 'Red'
                 $label = "$($label) - plus de place"
             }
@@ -546,7 +587,7 @@ class CargoMenu {
                 if ($cargo.cargoShip.isLoaded($_.Name)) {
 
                     # cas deja chargé
-                    $command = @( "exit","[CargoRenderer]::RenderLoadingMenu()")
+                    $command = @( "exit", "[CargoRenderer]::RenderLoadingMenu()")
                     $color = 'Green'
                     $label = "$($label) - Deja chargé"
                 }
