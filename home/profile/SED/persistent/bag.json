@@ -1,59 +1,19 @@
 {
-  "maxCapacity": 0,
-  "stats": {
-    "totalAcquired": 5,
-    "lastModified": "2026-05-25T12:27:46.5580172Z"
-  },
   "items": [
-    {
-      "name": "Renfort de filet",
-      "description": "Augmente un peu la capacité du filet",
-      "price": 10,
-      "quantity": 1,
-      "category": "bigfish",
-      "Metadata": {
-        "NetCapacity": 1
-      }
-    },
-    {
-      "name": "Detecteur de poisson",
-      "description": "Détecte la présence de poisson",
-      "price": 100,
-      "quantity": 1,
-      "category": "bigfish",
-      "Metadata": {
-        "CanScan": true
-      }
-    },
-    {
-      "name": "Scanneur de profondeur",
-      "description": "Détecte la présence de poisson dans les profondeurs",
-      "price": 1000,
-      "quantity": 1,
-      "category": "bigfish",
-      "Metadata": {
-        "CanDeepScan": true
-      }
-    },
     {
       "name": "Unité de stockage pour paquebot",
       "description": "Augmente la capacité du cargo'",
       "price": 100,
-      "quantity": 1,
+      "quantity": 3,
       "category": "cargo",
       "Metadata": {
         "CargoCapacity": 1
       }
-    },
-    {
-      "name": "Carte",
-      "description": "Liste les ports connus",
-      "price": 50,
-      "quantity": 1,
-      "category": "dock",
-      "Metadata": {
-        "CanShowMap": true
-      }
     }
-  ]
+  ],
+  "stats": {
+    "totalAcquired": 1,
+    "lastModified": "2026-05-25T12:46:09.7644636Z"
+  },
+  "maxCapacity": 0
 }

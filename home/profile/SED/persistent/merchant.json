@@ -1,25 +1,6 @@
 {
-  "ItemsSold": [
-    {
-      "name": "Detecteur de poisson",
-      "description": "Détecte la présence de poisson",
-      "price": 100,
-      "quantity": 1,
-      "category": "bigfish",
-      "Metadata": {
-        "CanScan": true
-      }
-    },
-    {
-      "name": "Scanneur de profondeur",
-      "description": "Détecte la présence de poisson dans les profondeurs",
-      "price": 1000,
-      "quantity": 1,
-      "category": "bigfish",
-      "Metadata": {
-        "CanDeepScan": true
-      }
-    },
+  "ItemsSold": [],
+  "ItemsAvailable": [
     {
       "name": "Carte",
       "description": "Liste les ports connus",
@@ -29,14 +10,12 @@
       "Metadata": {
         "CanShowMap": true
       }
-    }
-  ],
-  "ItemsAvailable": [
+    },
     {
       "name": "Renfort de filet",
       "description": "Augmente un peu la capacité du filet",
       "price": 10,
-      "quantity": 199,
+      "quantity": 200,
       "category": "bigfish",
       "Metadata": {
         "NetCapacity": 1
@@ -63,6 +42,26 @@
       }
     },
     {
+      "name": "Detecteur de poisson",
+      "description": "Détecte la présence de poisson",
+      "price": 100,
+      "quantity": 1,
+      "category": "bigfish",
+      "Metadata": {
+        "CanScan": true
+      }
+    },
+    {
+      "name": "Scanneur de profondeur",
+      "description": "Détecte la présence de poisson dans les profondeurs",
+      "price": 1000,
+      "quantity": 1,
+      "category": "bigfish",
+      "Metadata": {
+        "CanDeepScan": true
+      }
+    },
+    {
       "name": "Petit Quai",
       "description": "Permet d'établir un port'",
       "price": 5000,
@@ -76,7 +75,7 @@
       "name": "Unité de stockage pour paquebot",
       "description": "Augmente la capacité du cargo'",
       "price": 100,
-      "quantity": 99,
+      "quantity": 97,
       "category": "cargo",
       "Metadata": {
         "CargoCapacity": 1
