@@ -5,6 +5,14 @@ class Wallet {
     [hashtable] $Metadata
     [string] $devise = '¥'
 
+    static [Wallet] getInstance() {
+        if ($null -eq $global:sailor_wallet) {
+            $wallet_prf_path = Join-Path $global:persistent_data "wallet.json"
+            $global:sailor_wallet = [Wallet]::New($wallet_prf_path)
+        }
+        return $global:sailor_wallet
+    } 
+
     Wallet([string] $savePath) {
         $this.SavePath = $savePath
         $this.Metadata = @{}
@@ -14,18 +22,19 @@ class Wallet {
 
             $this.Metadata = @{}
             if ($data.Metadata) {
-                 $data.Metadata.PSObject.Properties | ForEach-Object {
+                $data.Metadata.PSObject.Properties | ForEach-Object {
                     $this.Metadata[$_.Name] = $_.Value
-                 }
+                }
             }
-        } else {
+        }
+        else {
             $this.valeur = 1000
         }
     }
 
     [void] Save() {
         @{
-            valeur    = $this.valeur
+            valeur   = $this.valeur
             Metadata = $this.Metadata
         } | ConvertTo-Json | Set-Content $this.SavePath
         $global:sailor_wallet = $this
@@ -48,9 +57,10 @@ class Wallet {
 
 class WalletRenderer {
     [void] RenderWallet([Wallet] $w) {
-        $inner  = 40  # largeur intérieure fixe
-        $top    = "═" * ($inner + 2)
-
+        $inner = 40  # largeur intérieure fixe
+        $top = "═" * ($inner + 2)
+        $pad = 20
+        
         Write-Host ""
         Write-Host "  ╔══[ " -ForegroundColor DarkGray -NoNewline
         Write-Host "WALLET" -ForegroundColor Yellow -NoNewline
@@ -69,8 +79,9 @@ class WalletRenderer {
             $w.Metadata.GetEnumerator() | ForEach-Object {
                 $val = "$($_.Value)"
                 Write-Host "  ║  " -ForegroundColor DarkGray -NoNewline
-                Write-Host "$($_.Key.PadRight(10)) : " -ForegroundColor Magenta -NoNewline
-                Write-Host $val.PadRight($inner - 13) -ForegroundColor White -NoNewline
+
+                Write-Host "$($_.Key.PadRight($pad)) : " -ForegroundColor Magenta -NoNewline
+                Write-Host $val.PadRight($inner - $pad - 3) -ForegroundColor White -NoNewline
                 Write-Host "║" -ForegroundColor DarkGray
             }
         }

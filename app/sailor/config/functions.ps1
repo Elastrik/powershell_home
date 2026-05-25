@@ -11,12 +11,9 @@ $wallet_class = Join-Path $global:sailor_wallet_path "wallet.ps1"
 $global:sailor_wallet = $null
 
 function Wallet() {
-    if ($null -eq $global:sailor_wallet) {
-        $wallet_prf_path = Join-Path $global:persistent_data "wallet.json"
-        $global:sailor_wallet = [Wallet]::New($wallet_prf_path)
-    }
+    $w = [Wallet]::GetInstance()
     $wrender = [WalletRenderer]::new()
-    $wrender.RenderWallet($global:sailor_wallet)
+    $wrender.RenderWallet($w)
 }
 
 
@@ -25,17 +22,10 @@ $bag_class = Join-Path $global:sailor_bag_path "bag.ps1"
 . $bag_class
 $global:sailor_bag = $null
 function Bag {
-    if ($null -eq $global:sailor_bag) {
-        $bag_prf_path = Join-Path $global:persistent_data "bag.json"
-        $global:sailor_bag = [Bag]::New($bag_prf_path)
-    }
 
-    $bag = $global:sailor_bag
+
+    $bag = [Bag]::GetInstance()
     
-    if ($null -eq $bag) {
-        Write-Host "✗ Le sac n'est pas initialisé" -ForegroundColor Red
-        return
-    }
 
     $renderer = [BagRenderer]::new()
     $renderer.RenderBag($bag)
@@ -48,27 +38,8 @@ $merchant_class = Join-Path $global:sailor_merchant_path "merchant.ps1"
 
 $global:sailor_merchant = $null
 function Merchant {
-    if ($null -eq $global:sailor_wallet) {
-        $wallet_prf_path = Join-Path $global:persistent_data "wallet.json"
-        $global:sailor_wallet = [Wallet]::New($wallet_prf_path)
-    }
-    if ($null -eq $global:sailor_bag) {
-        $bag_prf_path = Join-Path $global:persistent_data "bag.json"
-        $global:sailor_bag = [Bag]::New($bag_prf_path)
-    
-    }
-
-    if ($null -eq $global:sailor_merchant) {
-        $merch_prf_path = Join-Path $global:persistent_data "merchant.json"
-
-        $global:sailor_merchant = [Merchant]::New($merch_prf_path)
-    }
-  
-    $merchant = $global:sailor_merchant
-    if ($merchant.itemsAvailable.Count -eq 0) {
-        Write-Host "Le marchand n'a rien à vendre pour le moment." -ForegroundColor Gray
-        return
-    }
+ 
+    $merchant = [Merchant]::GetInstance()
     $menuData = $merchant.GetJsonMenu()
     $menu = [Menu]::new($menuData)
     $choice = $menu.Show()
@@ -110,23 +81,17 @@ $bigfish_class = Join-Path $global:sailor_bigfish_path  "bigfish.ps1"
 # - fonction associées
 $global:sailor_bigfish_instance = $null
 function bigfish {
-    if ($null -eq $global:sailor_bag) {
-        $bag_prf_path = Join-Path $global:persistent_data "bag.json"
-        $global:sailor_bag = [Bag]::New($bag_prf_path)
-    }
-     
-    if ($null -eq $global:sailor_merchant) {
-        $merch_prf_path = Join-Path $global:persistent_data "merchant.json"
-        $global:sailor_merchant = [Merchant]::New($merch_prf_path)
-    }
-   
+    [BigFish]::GetInstance().Execute($args)
+}
 
-    if ($null -eq $global:sailor_wallet) {
-        $wallet_prf_path = Join-Path $global:persistent_data "wallet.json"
-        $global:sailor_wallet = [Wallet]::New($wallet_prf_path)
-    }
-    if ($null -eq $global:sailor_bigfish_instance ) {
-        $global:sailor_bigfish_instance = [BigFish]::new()
-    }
-    $global:sailor_bigfish_instance.Execute($args)
+
+# cargo
+$cargo_app = Join-Path $global:sailor_cargo_path  "cargo.ps1" 
+. $cargo_app
+
+$global:sailor_cargo = $null 
+function cargo () {
+    $cargo = [Cargo]::getInstance()
+    # command controler
+    $cargo.Execute($args)
 }

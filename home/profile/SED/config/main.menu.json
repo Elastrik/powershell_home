@@ -39,6 +39,11 @@
             "label": "BigFish — Gestion des fichiers",
             "command": "bigfish"
         },
+           {
+            "key": "C",
+            "label": "Cargo — Transport de fichiers",
+            "command": "cargo"
+        },
         {
             "key": "Q",
             "label": "Quitter",

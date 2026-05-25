@@ -7,6 +7,8 @@ class Item {
     [int] $quantity
     [Hashtable] $Metadata
 
+    
+
     Item([string] $name, [string] $description, [int] $price, [Hashtable] $metadata) {
         $this.name = $name
         $this.description = $description
@@ -28,9 +30,8 @@ class Item {
     }
     [bool] isAffordable() {
         $account = 0 
-        if($global:sailor_wallet.valeur) {
-            $account = $global:sailor_wallet.valeur
-        }
+        $account = [Wallet]::getInstance().valeur
+
         return $account -ge $this.price
     }
 }
@@ -79,7 +80,8 @@ class BagRenderer {
         Write-Host "╔═══════════════════════════════════════╗" -ForegroundColor Cyan
         if ($capacity -eq 0) {
             Write-Host "║ Total: $($totalItems) items (capacité illimitée)      " -ForegroundColor Cyan
-        } else {
+        }
+        else {
             $percentFull = [int]($totalItems / $capacity * 100)
             Write-Host "║ Total: $($totalItems)/$($capacity) items ($($percentFull)% plein)            " -ForegroundColor Cyan
         }
@@ -100,13 +102,24 @@ class Bag {
     [string] $SavePath
     [Hashtable] $stats
 
+    static [Bag] GetInstance() {
+        # write-Host "[Bag] getting instance" -ForegroundColor Red
+        if ($null -eq $global:sailor_bag) {
+            $bag_prf_path = Join-Path $global:persistent_data "bag.json"
+  
+            # write-Host "[Bag] First init" -ForegroundColor Red
+            $global:sailor_bag = [Bag]::New($bag_prf_path)
+        }
+        return $global:sailor_bag
+    }
+
     Bag([string] $savePath) {
         $this.SavePath = $savePath
         $this.items = @()
         $this.maxCapacity = 0  # 0 = illimité
         $this.stats = @{
             totalAcquired = 0
-            lastModified = (Get-Date -AsUTC).ToString("o")
+            lastModified  = (Get-Date -AsUTC).ToString("o")
         }
 
         if (Test-Path $savePath) {
@@ -152,9 +165,9 @@ class Bag {
     [void] Save() {
         try {
             @{
-                items = $this.items
+                items       = $this.items
                 maxCapacity = $this.maxCapacity
-                stats = $this.stats
+                stats       = $this.stats
             } | ConvertTo-Json -Depth 10 | Set-Content $this.SavePath
             $this.stats.lastModified = (Get-Date -AsUTC).ToString("o")
         }

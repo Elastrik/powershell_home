@@ -115,7 +115,7 @@ class FishNet {
     }
     [int] getCapacity() {
         $modifiers = 0
-        $global:sailor_bag.items | ForEach-Object {
+        [Bag]::GetInstance().items | ForEach-Object {
             
             if ($_.Metadata["NetCapacity"]) {
                 $modifiers += ([int]$_.Metadata["NetCapacity"] * $_.quantity)
@@ -125,7 +125,7 @@ class FishNet {
     }
     [bool] canGoDeep() {
         $canGoDeep = $false
-        $global:sailor_bag.items | ForEach-Object {
+        [Bag]::GetInstance().items | ForEach-Object {
             if ($_.Metadata["CanGoDeep"] -and $_.Metadata["CanGoDeep"] -eq "true") {
                 $canGoDeep = $true
             }
@@ -134,7 +134,7 @@ class FishNet {
     }
     [bool] canFishByType() {
         $canFishByType = $false
-        $global:sailor_bag.items | ForEach-Object {
+        [Bag]::GetInstance().items | ForEach-Object {
             if ($_.Metadata["CanFishByType"] -and $_.Metadata["CanFishByType"] -eq "true") {
                 $canFishByType = $true
             }
@@ -143,7 +143,7 @@ class FishNet {
     }
     [bool] CanDeepScan() {
         $CanDeepScan = $false
-        $global:sailor_bag.items | ForEach-Object {
+        [Bag]::GetInstance().items | ForEach-Object {
             if ($_.Metadata["CanDeepScan"] -and $_.Metadata["CanDeepScan"] -eq "true") {
                 $CanDeepScan = $true
             }
@@ -152,7 +152,7 @@ class FishNet {
     }
     [bool] CanScan() {
         $CanScan = $false
-        $global:sailor_bag.items | ForEach-Object {
+        [Bag]::GetInstance().items | ForEach-Object {
             if ($_.Metadata["CanScan"] -and $_.Metadata["CanScan"] -eq "true") {
                 $CanScan = $true
             }
@@ -161,7 +161,9 @@ class FishNet {
     }
     [bool] CanSetDock() {
         $CanSetDock = $false
-        $global:sailor_bag.items | ForEach-Object {
+        $b = [Bag]::GetInstance()
+        # write-Host $b
+        $b.items | ForEach-Object {
             if ($_.Metadata["CanSetDock"] -and $_.Metadata["CanSetDock"] -eq "true") {
                 $CanSetDock = $true
             }
@@ -170,7 +172,8 @@ class FishNet {
     }
     [bool] CanShowMap() {
         $canShowMap = $false
-        $global:sailor_bag.items | ForEach-Object {
+        $b = [Bag]::GetInstance()
+        $b.items | ForEach-Object {
             if ($_.Metadata["CanShowMap"] -and $_.Metadata["CanShowMap"] -eq "true") {
                 $canShowMap = $true
             }
@@ -330,7 +333,7 @@ class FishRenderer {
 
         Write-Host "~>$($fishLabel.padRight(12,'~')) " -ForegroundColor $color -NoNewline
         Write-Host "$($fish.file.Name.PadRight($padding,$filler))" -ForegroundColor $color -NoNewline
-        Write-Host " — $($fish.displaySize) -$($fish.valeur)$($global:sailor_wallet.devise)" -ForegroundColor $color 
+        Write-Host " — $($fish.displaySize) -$($fish.valeur)$([Wallet]::GetInstance().devise)" -ForegroundColor $color 
     }
     [void] RenderWallet([BigFish] $bf) {
         $wr = [WalletRenderer]::new()
@@ -387,7 +390,7 @@ class FishRenderer {
                         } 
                     }
                     $displaysize = "$size" + $unit
-                    Write-Host "Valeur totale : $($value) $($global:sailor_wallet.devise) ($($displaysize)) "  -ForegroundColor DarkRed
+                    Write-Host "Valeur totale : $($value) $([Wallet]::GetInstance().devise) ($($displaysize)) "  -ForegroundColor DarkRed
                 }
 
                 Write-Host ""
@@ -409,7 +412,7 @@ class FishRenderer {
             } 
         }
         $displaysize = "$size" + $unit
-        Write-Host "Valeur totale : $($value) $($global:sailor_wallet.devise) ($($displaysize)) "  -ForegroundColor DarkRed
+        Write-Host "Valeur totale : $($value) $([Wallet]::GetInstance().devise) ($($displaysize)) "  -ForegroundColor DarkRed
                     
         Write-Host "~ Total : $count poissons  ~" -ForegroundColor Yellow
         Read-Host "[Entrée pour continuer]"        
@@ -492,7 +495,6 @@ class FishRenderer {
 
 class BigFishMenu {
     static [string] main() {
-        # $bf = $global:sailor_bigfish_instance
         $menu = @{
             title    = "~~ BIGFISH ~~"
             subtitle = "A la pêche au gros !"
@@ -537,7 +539,7 @@ class BigFishMenu {
     }
 
     static [string] FishingMenu() {
-        $bf = $global:sailor_bigfish_instance
+        $bf = [BigFish]::GetInstance()
         $menu = @{
             title    = "~~ BIGFISH - menu de pêche ~~"
             subtitle = "Emplacement : $((Get-Location).Path)"
@@ -689,8 +691,8 @@ class BigFishMenu {
             color    = "Blue"
             options  = @()
         }
-
-        if ($global:sailor_bigfish_instance.Fisher.Net.CanShowMap()) {
+        $b = [Bag]::GetInstance()
+        if ([BigFish]::GetInstance().Fisher.Net.CanShowMap()) {
             $options = @{
                 key     = "M"
                 label   = "Afficher la carte"
@@ -702,7 +704,7 @@ class BigFishMenu {
 
         $optionKey = 1
         $options = @{
-            key     = "B"
+            key     = ".."
             label   = "Demi-tour (..)"
             command = @("set-Location ..", "exit", "[Menu]::New([BigFishMenu]::SailingMenu()).show()")
             color   = "Blue"
@@ -743,7 +745,7 @@ class BigFishMenu {
             $menu.options += $options
         }
         else {
-            if ($global:sailor_bigfish_instance.Fisher.Net.CanSetDock()) {
+            if ([BigFish]::GetInstance().Fisher.Net.CanSetDock()) {
                 $options = @{
                     key     = "S"
                     label   = "Poser un quai d'appoint"
@@ -780,7 +782,7 @@ class FishWallet {
     [Wallet] $Wallet
 
     FishWallet([string] $savePath) {
-        $this.Wallet = [Wallet]::new($savePath)
+        $this.Wallet = [Wallet]::GetInstance()
     }
 
     [void] AddCatch([FishFile] $fish) {
@@ -806,6 +808,13 @@ class BigFish {
     [Fisher]       $Fisher
     [FishRenderer] $Renderer
     [FishWallet]   $wallet
+
+    static [BigFish] GetInstance() {
+        if ($null -eq $global:sailor_bigfish_instance ) {
+            $global:sailor_bigfish_instance = [BigFish]::new()
+        }
+        return $global:sailor_bigfish_instance
+    }
 
     BigFish() {
         $this.Fisher = [Fisher]::new()
