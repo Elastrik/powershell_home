@@ -106,12 +106,22 @@ Class Cargo {
         $wallet = [Wallet]::GetInstance()
         # debug
         # write-host "[Cargo] Deliver() wallet loaded - value : $($wallet.Valeur)" -ForegroundColor Yellow
+        [CargoRenderer]::RenderManifest()
 
-        $valueDelivered = $this.cargoShip.Deliver()
+        Write-Host "Voulez vous déplacer ces ficheirs vers le répertoire : " -ForegroundColor Yellow
+        Write-Host "$((Get-Location).Path) ? " -ForegroundColor Yellow
+        
+        $confirm = Read-Host "[Y/N]"
+
+        if ($confirm -eq "Y" -or $confirm -eq "y") {
+
+            $valueDelivered = $this.cargoShip.Deliver()
+            $wallet.addValue($valueDelivered)
+        }
         # debug
+
         # write-host "[Cargo] Deliver() wallet loaded - Value Delivered : $($valueDelivered)" -ForegroundColor Yellow
 
-        $wallet.addValue($valueDelivered)
 
         # debug
         # write-host "[Cargo] Deliver() wallet updated  -wallet :  : $($wallet.valeur)" -ForegroundColor Yellow
@@ -247,7 +257,7 @@ Class Parcel {
             $parcelCount = $wallet.GetMetaData("ParcelCount")
 
             # debug
-            write-host "[Parcel] Deliver() - Wallet ParcelCount loaded - $($parcelCount)"
+            # write-host "[Parcel] Deliver() - Wallet ParcelCount loaded - $($parcelCount)"
             
 
             if ($null -eq $parcelCount) {
@@ -387,7 +397,7 @@ class CargoMenu {
             key     = 'N'
             label   = "Naviguer"
             # command = "[Menu]::New([BigFishMenu]::SailingMenu()).show()"
-            command = "[CargoRenderer]::RenderSailingMenu()"
+            command = @("exit", "[CargoRenderer]::RenderSailingMenu()")
             color   = "White"
         }
         $menu.options += $options
@@ -396,25 +406,24 @@ class CargoMenu {
             key     = "C"
             label   = "Charger"
             command = @("exit", "[CargoRenderer]::RenderLoadingMenu()")
-            color   = "White"
+            color   = "Yellow"
         }
         $menu.options += $options
 
         $options = @{
             key     = "M"
             label   = "Manifeste de chargement"
-            command = @("[CargoRenderer]::RenderManifest()", "[CargoRenderer]::RenderMainMenu()")
+            command = @("exit", "[CargoRenderer]::RenderManifest()", "[CargoRenderer]::RenderMainMenu()")
             color   = "White"
         }
         $menu.options += $options
-
 
         if ($cargo.cargoShip.payload.count -gt 0) {
             $options = @{
                 key     = "D"
                 label   = "Décharger"
-                command = @("cargo deliver", "[CargoRenderer]::RenderMainMenu()")
-                color   = "White"
+                command = @("exit", "cargo deliver", "[CargoRenderer]::RenderMainMenu()")
+                color   = "DarkYellow"
             }
             $menu.options += $options
         }
@@ -432,7 +441,8 @@ class CargoMenu {
         return $menu | ConvertTo-Json -Depth 5
     }
     static [String] GetSailingMenu() {
-        
+        $cargo = [Cargo]::GetInstance()
+
         $menu = @{
             title    = "~~ CARGO MENU NAVIGATION ~~ "
             subtitle = "Emplacement : $((Get-Location).Path)"
@@ -450,6 +460,7 @@ class CargoMenu {
         }
         $menu.options += $options
 
+        
         Get-ChildItem -Directory | ForEach-Object {
             $location = $_.FullName
          
@@ -459,22 +470,42 @@ class CargoMenu {
             $options = @{
                 key     = ($optionKey++).toString()
                 label   = $label
-                command = @("cargo sail $location", "exit", "[CargoRenderer]::RenderSailingMenu()")
+                command = @("cargo sail '$location'", "exit", "[CargoRenderer]::RenderSailingMenu()")
                 color   = $color
             }
             $menu.options += $options
         }    
 
+
         $options = @{
             key     = "C"
-            label   = "Charger des Colis"
-            command = "[CargoRenderer]::RenderLoadingMenu()"
-            color   = "Gray"
+            label   = "Charger"
+            command = @("exit", "[CargoRenderer]::RenderLoadingMenu()")
+            color   = "Yellow"
+        }
+        $menu.options += $options
+
+        $options = @{
+            key     = "M"
+            label   = "Manifeste de chargement"
+            command = @("exit", "[CargoRenderer]::RenderManifest()", "[CargoRenderer]::RenderMainMenu()")
+            color   = "White"
+        }
+        $menu.options += $options
+
+        if ($cargo.cargoShip.payload.count -gt 0) {
+            $options = @{
+                key     = "D"
+                label   = "Décharger"
+                command = @("exit", "cargo deliver", "[CargoRenderer]::RenderMainMenu()")
+                color   = "DarkYellow"
+            }
+            $menu.options += $options
         }
         $options = @{
             key     = "Q"
-            label   = "Quitter le menu de Chargement"
-            command = @("exit")
+            label   = "Menu Principal"
+            command = @("exit", "[CargoRenderer]::RenderMainMenu()")
             color   = "Gray"
         }
         $menu.options += $options
@@ -496,15 +527,18 @@ class CargoMenu {
         $optionKey = 1
 
         Get-ChildItem -File | ForEach-Object {
+
+            # debug
+            # write-Host "SailingMenu - Listing " : $_.Name
          
             # Cas classique
             $label = $_.Name
             $color = "DarkYellow"
-            $command = @("cargo load $label", "exit", "[CargoRenderer]::RenderLoadingMenu()")
+            $command = @("cargo load '$label'", "exit", "[CargoRenderer]::RenderLoadingMenu()")
 
             # Cas plus de place 
             if ($loadcount -ge $capacity) {
-                $command = '[CargoRenderer]::RenderLoadingMenu()'
+                $command = @( "exit","[CargoRenderer]::RenderLoadingMenu()")
                 $color = 'Red'
                 $label = "$($label) - plus de place"
             }
@@ -512,13 +546,12 @@ class CargoMenu {
                 if ($cargo.cargoShip.isLoaded($_.Name)) {
 
                     # cas deja chargé
-                    $command = '[CargoRenderer]::RenderLoadingMenu()'
+                    $command = @( "exit","[CargoRenderer]::RenderLoadingMenu()")
                     $color = 'Green'
                     $label = "$($label) - Deja chargé"
                 }
             }
 
-            Write-host "GetLoadingMenu() - command : $($command)"
             $options = @{
                 key     = ($optionKey++).toString()
                 label   = $label
@@ -530,8 +563,8 @@ class CargoMenu {
 
         $options = @{
             key     = "Q"
-            label   = "Quitter le menu de Chargement"
-            command = @("exit")
+            label   = "Menu Principal"
+            command = @("exit", "[CargoRenderer]::RenderMainMenu()")
             color   = "Gray"
         }
         $menu.options += $options
@@ -621,11 +654,11 @@ Class CargoRenderer {
             Write-Host " -> " -ForegroundColor DarkMagenta -NoNewline
             Write-Host "$(([String]$_.getTransportPrice() + $devise).PadLeft(5,' '))" -ForegroundColor White 
             
-            Write-Host ">  -[ Origine : " -ForegroundColor DarkBlue -NoNewLine
+            Write-Host ">  -[ Origine : " -ForegroundColor Magenta -NoNewLine
             Write-Host " $($_.startLocation)" -ForegroundColor Gray -NoNewline
-            Write-Host " ]" -ForegroundColor DarkBlue
+            Write-Host " ]" -ForegroundColor Magenta
             
-            # Write-Host " "
+            Write-Host " "
 
             $totalPrice += $_.getTransportPrice()
 
@@ -633,11 +666,8 @@ Class CargoRenderer {
         Write-Host "~~ [FIN DU MANIFESTE] ~~ " -ForegroundColor Magenta
         Write-Host "> Total : " -ForegroundColor DarkRed -NoNewline
         Write-Host "$(([String]$totalPrice + $devise).PadLeft(5,0))" -ForegroundColor White 
-         
-        
-
-        Write-Host "[Entree pour continuer]" -NoNewLine
         Read-Host " "
+         
 
     }
 
