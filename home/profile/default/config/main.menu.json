@@ -39,21 +39,15 @@
             "color": "DarkBlue"
         },
         {
-            "key": "7",
-            "label": "GitHub Desktop",
-            "command": "gitHubDesktop",
-            "color": "Magenta"
-        },
-        {
-            "key": "8",
-            "label": "VSCODE",
-            "submenu": "home\\profile\\Elastrik\\config\\vscode.json",
-            "color": "Cyan"
-        },
-        {
             "key": "F",
             "label": "BigFish — Gestion des fichiers",
             "command": "bigfish"
+        },
+        
+        {
+            "key": "C",
+            "label": "Cargo — transport de fichier",
+            "command": "cargo"
         },
         {
             "key": "Q",
