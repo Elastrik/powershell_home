@@ -317,8 +317,7 @@ class FishRenderer {
         Write-Host " — $($fish.displaySize) -$($fish.valeur)$([Wallet]::GetInstance().devise)" -ForegroundColor $color 
     }
     [void] RenderWallet([BigFish] $bf) {
-        $wr = [WalletRenderer]::new()
-        $wr.renderWallet($bf.wallet.wallet)
+        [WalletRenderer]::RenderWallet()
         
     }
 
