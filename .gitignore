@@ -1,0 +1,10 @@
+
+home/*
+
+.vscode/
+
+
+app/llm/spec.md
+app/llm/todo.txt
+app/llm/modules/core/functionnal_llm.ps1
+app/llm/llmcore_spec

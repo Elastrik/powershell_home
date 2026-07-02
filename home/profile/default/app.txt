@@ -1,3 +1,4 @@
 # Applications a charger pour le profil VSCODE
 # Une ligne par app (chemin relatif depuis app/)
 sailor
+llm
