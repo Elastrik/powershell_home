@@ -1,4 +1,6 @@
 # Modules core a charger
 # Une ligne par module (chemin relatif depuis core/)
 menu
+
+database
 welcome
