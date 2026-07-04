@@ -1,0 +1,21 @@
+this is a database core module that i want to implement in a custom powershell profile and app manager.
+You have to focus on the core\database folder
+I want you to work on the dbmanager.ps1 file that's the logic class to encapsulate SQLLite database query.
+This database core module will be used later on other apps.
+
+the folder config contains 3 files : 
+core\database\config\alias.ps1
+core\database\config\functions.ps1
+core\database\config\variables.ps1
+
+You don't edit theses 3 files, that's MY job. But you can read them.
+
+Test protocol : 
+open a new pwsh terminal. 
+Then , you can run this command in a pwsh terminal to test : 
+
+testDb "test.db" "SELECT * FROM TEST;" 
+
+It should display the request result with no error
+Ignore the outputs that appears before the testDb command. 
+
