@@ -1,115 +1,74 @@
-Racine
-|   architechture.txt
-|       
-+---app // Repertoire pour les applis installées
-|   \---sailor
-|       |   app.ps1 // Load les fichiers qui sont dans config (appelé par apploader)
-|       |   
-|       +---config
-|       |       alias.ps1
-|       |       functions.ps1 // Load les classes qui sont dans module eventuellement
-|       |       variables.ps1
-|       |       
-|       \---modules
-|           +---app // sous application
-|           |   \---bigfish
-|           |           bigfish.ps1
-|           |           menu_bigfish_type.json
-|           |           
-|           \---core // Le coeur sur lequel s'appuie les sous-application
-|               +---bag
-|               |       bag.ps1
-|               |       README.md
-|               |       
-|               +---dockMap
-|               |       dockMap.ps1
-|               |       
-|               +---merchant
-|               |       merchant.json
-|               |       merchant.ps1
-|               |       
-|               \---wallet
-|                       wallet.ps1
-|                       
-+---core // Le coeur du fonctionnement de mon environnement
-|   +---menu // La gestion des menus
-|   |   |   core.ps1
-|   |   |   menu.ps1
-|   |   |   
-|   |   \---config // Les alias, variables et fonctions associées aux menu
-|   |           alias.ps1
-|   |           functions.ps1
-|   |           variables.ps1
-|   |           
-|   +---profile
-|   |   |   apploader.ps1 // Lit le contenu de app et core dans le profile à charger
-|   |   |   
-|   |   \---common // Variables, fonctions et alias communs a tous les profiles
-|   |       \---config
-|   |               alias.ps1
-|   |               functions.ps1
-|   |               variables.ps1
-|   |               
-|   \---welcome // Gestion de l'écran d'accueil
-|       |   core.ps1
-|       |   welcome.ps1
-|       |   
-|       \---config
-\---home // repertoire home, ou l'on arrive en général en ouvrant le terminal
-    |   profile_example.txt
-    |   
-    +---menus 
-    |       machine_boulot.json
-    |       outil_boulot.json
-    |       vscode_boulot.json
-    |       
-    \---profile // profils de terminal disponibles
-        +---Elastrik
-        |   |   app.txt // Liste des app a charger (lu par apploader)
-        |   |   core.txt // Liste des core a charger (lu par apploader)
-        |   |   
-        |   +---config // alias, function, variables propres au profil egalement le menu principal
-        |   |       alias.ps1
-        |   |       functions.ps1
-        |   |       logo.ps1
-        |   |       main.menu.json
-        |   |       variable.ps1
-        |   |       welcome.ps1
-        |   |       
-        |   \---persistent // données sauvegardées par les applications
-        |           bag.json
-        |           docks.json
-        |           merchant.json
-        |           wallet.json
-        |           
-        +---Prod // un autre profil
-        |   |   app.txt
-        |   |   core.txt
-        |   |   
-        |   +---config
-        |   |       alias.ps1
-        |   |       functions.ps1
-        |   |       logo.ps1
-        |   |       main.menu.json
-        |   |       variable.ps1
-        |   |       welcome.ps1
-        |   |       
-        |   \---persistent
-        \---SED // un autre profil
-            |   app.txt
-            |   core.txt
-            |   
-            +---config
-            |       alias.ps1
-            |       functions.ps1
-            |       logo.ps1
-            |       main.menu.json
-            |       variable.ps1
-            |       welcome.ps1
-            |       
-            \---persistent
-                    bag.json
-                    docks.json
-                    merchant.json
-                    wallet.json
-                    
+# Architecture condensée (powershell_home)
+
+Vue d'ensemble volontairement courte, basée sur un `tree` retravaillé à la main puis
+corrigé par lecture réelle du disque (26/11/2026). Les arborescences ci-dessous sont des
+**exemples représentatifs, pas des listes exhaustives** : de nouveaux Core, App ou profils
+peuvent exister sans figurer ici.
+
+Contenu identique maintenu dans `.clinerules/10_architecture.md`.
+
+## Racine
+
+```
+powershell_home/
+├── core/      # Fondations techniques — ne dépend jamais de app/
+├── app/       # Applications installées — peuvent dépendre de core/
+├── home/      # Profils utilisateurs + point d'entrée (home/profile/)
+├── install.ps1     # Crée un nouveau profil
+├── launcher.ps1    # Lance core/profile/apploader.ps1 pour le profil actif
+└── architechture.txt
+```
+
+## core/ (exemples réels)
+
+```
+core/
+├── menu/              # core.ps1, menu.ps1 (classes Menu/MenuItem), config/
+├── welcome/           # core.ps1, welcome.ps1 (classe Welcome), config/
+├── database/          # core.ps1, dbmanager.ps1 (classe DataBaseManager), config/
+└── profile/
+    ├── apploader.ps1  # pilote le chargement : common -> Core (core.txt) -> App (app.txt) -> profil
+    └── common/config/ # variables/functions/alias chargés avant tout Core/App
+```
+
+Chaque module Core suit : `core.ps1` → `config/variables.ps1` → classe(s) métier
+éventuelle(s) → `config/functions.ps1` → `config/alias.ps1`.
+
+## app/ (exemples réels)
+
+```
+app/
+├── sailor/            # app.ps1, config/, modules/
+│   └── modules/
+│       ├── core/      # bag, dockMap, merchant, wallet — coeur interne de sailor
+│       └── app/       # bigfish, cargo — sous-applications de sailor
+└── llm/               # app.ps1, config/, modules/core/LlmCore.ps1
+```
+
+Chaque App suit : `app.ps1` → `config/variables.ps1` → `config/functions.ps1` →
+`config/alias.ps1`. Une App peut posséder sa propre hiérarchie interne `modules/core/` et
+`modules/app/` (cf. sailor) ; les mêmes règles Core→App s'y appliquent en interne.
+
+## home/profile/<Profil>/ (exemples réels : default, KERHIS)
+
+```
+home/profile/<Profil>/
+├── core.txt           # liste des Core à charger
+├── app.txt            # liste des App à charger
+├── config/
+│   ├── variable.ps1   # ⚠️ singulier — exception propre au profil uniquement
+│   ├── functions.ps1
+│   ├── alias.ps1
+│   ├── logo.ps1
+│   ├── welcome.ps1
+│   └── main.menu.json # menu principal (commande mmm)
+└── persistent/        # données sauvegardées par les apps (ex: wallet.json, docks.json)
+```
+
+## Règles invariantes
+
+- Core ne dépend jamais d'App ; tous les Core sont chargés avant les App (`apploader.ps1`).
+- Ordre de chargement d'un module : `variables.ps1` → `functions.ps1` → `alias.ps1`.
+- Seul `home/profile/<Profil>/config/variable.ps1` est au singulier ; partout ailleurs
+  (Core, App, modules internes) c'est `variables.ps1` (pluriel).
+

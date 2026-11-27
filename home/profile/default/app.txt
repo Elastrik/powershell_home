@@ -2,3 +2,4 @@
 # Une ligne par app (chemin relatif depuis app/)
 sailor
 llm
+memo
