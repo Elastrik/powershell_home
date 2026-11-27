@@ -1,167 +1,163 @@
 class DataBaseManager {
-    [string]           $dbPath
-    $connection
+    [string] $DbPath
+    $Connection
+    [bool]   $Verbose = $false
 
-    DataBaseManager([string] $dbpath) {
-        $this.connection = $null
-        $this.dbPath = $dbpath
-        if ( -not (Test-Path  $this.dbPath ) ) {
-            write-host "Creating file : $($this.dbPath)" -ForegroundColor Green
-            New-Item -Path $this.dbPath -ItemType File -Force
-            
-            write-host "Base de données createe : $($this.dbPath)" -ForegroundColor Green
-        }        
+    # Constructeur standard (silencieux)
+    DataBaseManager([string] $dbPath) {
+        $this.Init($dbPath, $false)
     }
 
-    [bool] checkConfig() {
-        if ( -not (Test-Path  $this.dbPath ) ) {
-            write-host " Base de données introuvable : $($this.dbPath)" -ForegroundColor Red
-   
+    # Constructeur avec contrôle explicite de la verbosité (usage CLI)
+    DataBaseManager([string] $dbPath, [bool] $verbose) {
+        $this.Init($dbPath, $verbose)
+    }
+
+    hidden [void] Init([string] $dbPath, [bool] $verbose) {
+        $this.Verbose = $verbose
+        $this.Connection = $null
+        $this.DbPath = $dbPath
+        if (-not (Test-Path $this.DbPath)) {
+            New-Item -Path $this.DbPath -ItemType File -Force | Out-Null
+            if ($this.Verbose) {
+                Write-Host "Base de données créée : $($this.DbPath)" -ForegroundColor Green
+            }
+        }
+    }
+
+    [bool] CheckConfig() {
+        if (-not (Test-Path $this.DbPath)) {
+            Write-Host "Base de données introuvable : $($this.DbPath)" -ForegroundColor Red
             return $false
         }
-        if ($null -eq $this.connection) {
-            write-host " Connexion a la base de données introuvable : $($this.dbPath)" -ForegroundColor Red
+        if (-not $this.IsConnected()) {
+            Write-Host "Connexion à la base de données introuvable : $($this.DbPath)" -ForegroundColor Red
             return $false
         }
         return $true
     }
 
-    connect() {
-        if ( $null -eq $this.connection ) {
-            $this.connection = New-SQLiteConnection -DataSource $this.dbPath
-
-            write-host "Connexion a la base de données établie : $($this.dbPath)" -ForegroundColor Green
-        }
-        # return $this.connection
+    [bool] IsConnected() {
+        return ($null -ne $this.Connection)
     }
 
-    [string] query([string] $query) {
-        $json =$null
-        if ( $null -eq $this.connection ) {
-            $this.connect()
+    [void] Connect() {
+        if ($this.IsConnected()) {
+            return
         }
-
-        write-host "Executing query : $($query)" -ForegroundColor White
-
-        $result = Invoke-SqliteQuery -SQLiteConnection $this.connection -Query $query
-        
-        if ($null -ne $result) {
-            write-host "Query result:" -ForegroundColor Cyan
-            $json = $result | ConvertTo-Json -Depth 100
-            write-host $json -ForegroundColor Cyan
-            
-        } else {
-            write-host "Query executed (no data)" -ForegroundColor Yellow
-        }
-        return $json
-    }
-
-    [void] displayResult($json) {
         try {
-            if ([string]::IsNullOrWhiteSpace($json)) {
-                write-host "No data returned" -ForegroundColor Yellow
-                return
+            $this.Connection = New-SQLiteConnection -DataSource $this.DbPath
+            if ($this.Verbose) {
+                Write-Host "Connexion à la base de données établie : $($this.DbPath)" -ForegroundColor Green
             }
-            
-            $parsed = $json | ConvertFrom-Json
-            
-            if ($null -eq $parsed) {
-                write-host "Empty result set" -ForegroundColor Yellow
-                return
-            }
-            
-            if ($parsed -is [array]) {
-                if ($parsed.Count -lt 1) {
-                    write-host "Empty result set" -ForegroundColor Yellow
-                    return
-                }
-                
-                $firstIsObject = ($parsed[0] -is [pscustomobject] -or $parsed[0] -is [hashtable])
-                
-                if ($firstIsObject) {
-                    write-host "`nResults ($($parsed.Count) rows):" -ForegroundColor Cyan
-                    
-                    if ($parsed.Count -eq 1) {
-                        $headers = $parsed[0].PSObject.Properties.Name
-                        foreach ($h in $headers) {
-                            write-host "$h : $($parsed[0].$h)" -ForegroundColor Cyan
-                        }
-                    } else {
-                        $headers = $parsed[0].PSObject.Properties.Name
-                        
-                        if ($headers.Count -eq 0) {
-                            write-host "Empty result set" -ForegroundColor Yellow
-                            return
-                        }
-                        
-                        # Build simple header line using explicit string building for compatibility
-                        $headerLine = ""
-                        for ($i = 0; $i -lt $headers.Count; $i++) {
-                            if ($i -gt 0) { 
-                                $headerLine += "       " 
-                            }
-                            $hName = $headers[$i]
-                            # Calculate padding and build with explicit string operations
-                            if ([int]$hName.Length -le 15) {
-                                $pad = " ".PadRight((15 - [int]$hName.Length))
-                            } else {
-                                $pad = ""
-                            }
-                            $headerLine += "$hName" + $pad
-                        }
-                        write-host $headerLine -ForegroundColor White
-                        
-                        # Print each row using explicit string building for compatibility
-                        for ($i = 0; $i -lt $parsed.Count; $i++) {
-                            $rowObj = $parsed[$i]
-                            $rowLine = ""
-                            foreach ($h in $headers) {
-                                if ($null -eq $rowObj.$h) {
-                                    $vStr = "NULL"
-                                } else {
-                                    $vStr = $rowObj.$h
-                                }
-                                # Safe length check and padding calculation
-                                $checkLen = 15 - [int]$vStr.Length
-                                if ($checkLen -gt 0) {
-                                    $pad = " ".PadRight($checkLen)
-                                } else {
-                                    $pad = ""
-                                }
-                                if ([int]$vStr.Length -le 13) {
-                                    $rowLine += "$vStr" + $pad
-                                } else {
-                                    # Second column needs different padding (13 chars max for display)
-                                    $checkLen2 = 13 - [int]$vStr.Length
-                                    if ($checkLen2 -gt 0) {
-                                        $pad2 = " ".PadRight($checkLen2)
-                                    } else {
-                                        $pad2 = ""
-                                    }
-                                    $rowLine += "       " + "$vStr" + $pad2
-                                }
-                            }
-                            write-host $rowLine -ForegroundColor White
-                        }
-                    }
-                } else {
-                    write-host "Results ($($parsed.Count) items):" -ForegroundColor Cyan
-                    for ($i = 0; $i -lt $parsed.Count; $i++) {
-                        write-host "[{$i}] $($parsed[$i])" -ForegroundColor Cyan
-                    }
-                }
-            } elseif ($parsed -is [pscustomobject] -or $parsed -is [hashtable]) {
-                write-host "Results (1 row):" -ForegroundColor Cyan
-                $headers = $parsed.PSObject.Properties.Name
-                foreach ($header in $headers) {
-                    write-host "$header : $($parsed.$header)" -ForegroundColor Cyan
-                }
-            } else {
-                write-host "Result: $($parsed)" -ForegroundColor Cyan
-            }
-        } catch {
-            write-host "Error parsing JSON result: $($_.Exception.Message)" -ForegroundColor Red
+        }
+        catch {
+            Write-Host "Erreur de connexion : $($_.Exception.Message)" -ForegroundColor Red
+            $this.Connection = $null
         }
     }
 
+    [void] Disconnect() {
+        if (-not $this.IsConnected()) {
+            return
+        }
+        try {
+            $this.Connection.Close()
+        }
+        catch {
+            # connexion déjà fermée / invalide : ignoré volontairement
+        }
+        $this.Connection = $null
+        if ($this.Verbose) {
+            Write-Host "Connexion fermée : $($this.DbPath)" -ForegroundColor DarkGray
+        }
+    }
+
+    # Exécute une requête SQL simple (SELECT ou écriture). Connecte automatiquement si besoin.
+    [object[]] Query([string] $sql) {
+        return $this.Query($sql, $null)
+    }
+
+    # Exécute une requête SQL paramétrée (protection anti-injection via -SqlParameters).
+    [object[]] Query([string] $sql, [hashtable] $parameters) {
+        if (-not $this.IsConnected()) {
+            $this.Connect()
+        }
+        if (-not $this.IsConnected()) {
+            Write-Host "Impossible d'exécuter la requête : pas de connexion active." -ForegroundColor Red
+            return $null
+        }
+
+        if ($this.Verbose) {
+            Write-Host "Executing query : $sql" -ForegroundColor White
+        }
+
+        $result = $null
+        try {
+            if ($null -ne $parameters) {
+                $result = Invoke-SqliteQuery -SQLiteConnection $this.Connection -Query $sql -SqlParameters $parameters
+            }
+            else {
+                $result = Invoke-SqliteQuery -SQLiteConnection $this.Connection -Query $sql
+            }
+        }
+        catch {
+            Write-Host "Erreur SQL : $($_.Exception.Message)" -ForegroundColor Red
+            return $null
+        }
+
+        if ($this.Verbose) {
+            if ($null -ne $result) {
+                Write-Host "Query result : $(@($result).Count) ligne(s)" -ForegroundColor Cyan
+            }
+            else {
+                Write-Host "Query executed (no data)" -ForegroundColor Yellow
+            }
+        }
+
+        return $result
+    }
+
+    # --- Transactions ---
+
+    [void] BeginTransaction() {
+        $this.Query("BEGIN TRANSACTION;") | Out-Null
+    }
+
+    [void] Commit() {
+        $this.Query("COMMIT;") | Out-Null
+    }
+
+    [void] Rollback() {
+        $this.Query("ROLLBACK;") | Out-Null
+    }
+
+    # --- Utilitaires métier ---
+
+    [bool] TableExists([string] $tableName) {
+        $result = $this.Query(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name = @name;",
+            @{ name = $tableName }
+        )
+        return ($null -ne $result -and @($result).Count -gt 0)
+    }
+
+    [string[]] GetTables() {
+        $result = $this.Query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
+        if ($null -eq $result) {
+            return @()
+        }
+        return @($result | ForEach-Object { $_.name })
+    }
+
+    # --- Affichage CLI (prend directement des objets, plus de JSON intermédiaire) ---
+
+    [void] DisplayResult([object[]] $rows) {
+        if ($null -eq $rows -or @($rows).Count -eq 0) {
+            Write-Host "Aucun résultat." -ForegroundColor Yellow
+            return
+        }
+        Write-Host "`nRésultats ($(@($rows).Count) ligne(s)) :" -ForegroundColor Cyan
+        $rows | Format-Table -AutoSize | Out-String | Write-Host -ForegroundColor White
+    }
 }

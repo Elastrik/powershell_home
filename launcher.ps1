@@ -10,4 +10,3 @@ $apploader = Join-Path $global:PSConfigRoot "core\profile\apploader.ps1"
 . $apploader
 
 Set-Location $global:default_location
-welcome
